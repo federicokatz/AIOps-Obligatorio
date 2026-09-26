@@ -33,7 +33,7 @@ Con una réplica por servicio, Kubernetes puede reiniciar un proceso y devolver 
 - Añadir `/health` superficial al gateway y convertir sus probes TCP a HTTP. La liveness de los tres servicios comprueba el proceso HTTP; no consulta base de datos ni servicios vecinos, para evitar reinicios en cascada.
 - Probes iniciales: startup `/health` cada 5 s, timeout 2 s, hasta 36 fallos (180 s); readiness cada 3 s, timeout 2 s, un fallo; liveness cada 5 s, timeout 2 s, tres fallos. Reevaluar ante falsos positivos.
 - Medir tres fallas aisladas por microservicio con `k8s/measure-self-healing.ps1`. El script confirma que PID 1 es `dotnet`, detiene el contenedor exacto desde CRI, espera un nuevo container ID y `READY`, y reemplaza el pod entre intentos para reiniciar el backoff de kubelet. La duración medida es desde la inyección hasta observar `READY` mediante consultas a Kubernetes: aproxima por arriba el MTTR real y **no** mide continuidad de tráfico.
-- Objetivo inicial: recuperación automática en los nueve intentos y hasta 30 s por intento. Si se excede, investigar y repetir; no declarar cumplido el objetivo por la sola presencia de probes.
+- La letra pide reducir el MTTR al mínimo posible, idealmente al orden de pocos segundos; **no fija un umbral numérico**. Los 30 s usados en el plan inicial fueron una referencia provisoria propuesta para esta primera medición, no un criterio del docente. Evaluar la recuperación automática en los nueve intentos, comparar los tiempos y seguir reduciéndolos.
 
 ### Resultado medido (26-09-2026)
 
@@ -45,7 +45,7 @@ Comando: `& 'Implementacion K8S/Codigo/k8s/measure-self-healing.ps1' -Trials 3 -
 | Users | 3/3 recuperados | 8,68; 10,05; 10,03 | 9,59 | 10,05 |
 | Pharmacy | 3/3 recuperados | 5,22; 5,25; 5,23 | 5,23 | 5,25 |
 
-En los nueve intentos se observó `NotReady`, aumentó `restartCount` de 0 a 1, cambió el container ID y volvió `READY`. Los tres deployments quedaron `1/1`; los tres `/health` respondieron `Healthy` a través del proxy de Kubernetes. El objetivo de 30 s se cumplió **para fallas aisladas de proceso en este nodo**. El script reemplazó el pod entre intentos para evitar el backoff acumulado; una secuencia rápida de fallas repetidas requiere otra prueba. Estos resultados no prueban disponibilidad continua para clientes, recuperación ante caída del nodo ni recuperación de dependencias.
+En los nueve intentos se observó `NotReady`, aumentó `restartCount` de 0 a 1, cambió el container ID y volvió `READY`. Los tres deployments quedaron `1/1`; los tres `/health` respondieron `Healthy` a través del proxy de Kubernetes. Se midieron entre 5,22 y 10,05 s **para fallas aisladas de proceso en este nodo**; estos números son la evidencia para discutir cuánto se acercan a “pocos segundos”. El script reemplazó el pod entre intentos para evitar el backoff acumulado; una secuencia rápida de fallas repetidas requiere otra prueba. Estos resultados no prueban disponibilidad continua para clientes, recuperación ante caída del nodo ni recuperación de dependencias.
 
 ## Limitaciones y decisiones pendientes
 
