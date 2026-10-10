@@ -54,6 +54,7 @@ builder.Services.AddOpenTelemetry()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
@@ -90,6 +91,8 @@ else if (rateLimitMode.Equals("User", StringComparison.OrdinalIgnoreCase))
 
 app.UseAuthorization();
 
+// Proceso HTTP activo; las dependencias se comprueban por separado para evitar reinicios en cascada.
+app.MapHealthChecks("/health");
 app.MapReverseProxy();
 app.MapPrometheusScrapingEndpoint();
 
