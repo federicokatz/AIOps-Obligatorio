@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend build and tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: Implementacion K8S/Codigo/Backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up .NET 6
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: '6.0.x'
+      - name: Restore dependencies
+        run: dotnet restore PharmaGo.sln
+      - name: Build solution
+        run: dotnet build PharmaGo.sln --configuration Release --no-restore
+      - name: Run existing tests
+        run: >-
+          dotnet test PharnaGo.Test/PharmaGo.Test.csproj
+          --configuration Release --no-build --no-restore
+          --logger "trx;LogFileName=backend.trx"
+          --results-directory "${{ runner.temp }}/backend-test-results"
+      - name: Upload test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: backend-test-results
+          path: ${{ runner.temp }}/backend-test-results/*.trx
+          if-no-files-found: warn
+          retention-days: 7
+
+  frontend:
+    name: Frontend production build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: Implementacion K8S/Codigo/Frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      # Angular 14 admite Node 16; mantener compatibilidad con la aplicación actual.
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '16.20.2'
+          cache: npm
+          cache-dependency-path: Implementacion K8S/Codigo/Frontend/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build Angular
+        run: npm run build -- --configuration production
+      - name: Upload frontend build
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: frontend-build
+          path: Implementacion K8S/Codigo/Frontend/dist/pharma-go
+          if-no-files-found: error
+          retention-days: 7
+
+  kubernetes:
+    name: Kubernetes manifests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install pinned validators
+        shell: bash
+        run: |
+          set -euo pipefail
+          ci_bin="$RUNNER_TEMP/ci-bin"
+          mkdir -p "$ci_bin"
+          cd "$ci_bin"
+          curl -fsSLo kubectl https://dl.k8s.io/release/v1.35.1/bin/linux/amd64/kubectl
+          curl -fsSLo kubectl.sha256 https://dl.k8s.io/release/v1.35.1/bin/linux/amd64/kubectl.sha256
+          printf '%s  kubectl\n' "$(cat kubectl.sha256)" | sha256sum --check
+          curl -fsSLO https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz
+          curl -fsSLO https://github.com/yannh/kubeconform/releases/download/v0.8.0/CHECKSUMS
+          grep ' kubeconform-linux-amd64.tar.gz$' CHECKSUMS | sha256sum --check
+          tar -xzf kubeconform-linux-amd64.tar.gz kubeconform
+          chmod +x kubectl kubeconform
+          echo "$ci_bin" >> "$GITHUB_PATH"
+      - name: Check Bash syntax
+        shell: bash
+        run: |
+          while IFS= read -r -d '' script; do
+            bash -n "$script"
+          done < <(find "Implementacion K8S/Codigo/k8s" -name '*.sh' -print0)
+      - name: Render and validate both profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifests_dir="$RUNNER_TEMP/kubernetes-manifests"
+          mkdir -p "$manifests_dir"
+          for profile in local multinode; do
+            kubectl kustomize "Implementacion K8S/Codigo/k8s/overlays/$profile" > "$manifests_dir/$profile.yaml"
+            kubeconform -strict -summary -kubernetes-version 1.35.0 "$manifests_dir/$profile.yaml"
+          done
+          # Recursos compartidos: excluir Kustomizations y patches, que no son manifiestos finales.
+          find "Implementacion K8S/Codigo/k8s" -name '*.yaml' \
+            ! -name 'kustomization.yaml' ! -path '*/overlays/*' -print0 |
+            xargs -0 kubeconform -strict -summary -kubernetes-version 1.35.0
+      - name: Upload rendered manifests
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: kubernetes-manifests
+          path: ${{ runner.temp }}/kubernetes-manifests/*.yaml
+          if-no-files-found: error
+          retention-days: 7
