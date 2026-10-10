@@ -22,7 +22,7 @@ El docente advirtió que leer la lógica de negocio quema tokens sin aportar nad
 - `Implementacion K8S/Codigo/chaos-engineering/` — scripts de caos.
 - `Implementacion K8S/Codigo/grafana/`, `Backend/otel-collector-config.yaml`, `Backend/prometheus.yml` — telemetría y alertas.
 - `Dockerfile`s, `docker-compose.yml`, `nginx.conf`, `.github/workflows/` — build, imágenes y CI/CD.
-- Documentación: `*.md` del repo, `tutoriales/`, `docs/`.
+- Documentación: `*.md` del repo, `docs/` y `Implementacion K8S/Codigo/tutoriales/`. **Los `.md` son la fuente de conocimiento del proyecto**: leerlos antes de preguntar por cómo funciona algo. Incluye las guías `.md` de `Backend/` (`RATE_LIMITING_GUIDE.md`, `MICROSERVICES_MIGRATION_SUMMARY.md`, `explicacion-volumenes.md`), `QUICKSTART.md`, `k8s/README-k8s.md` y `chaos-engineering/README.md`. Cubren: Prometheus/métricas, Grafana, logs en Kibana, logs estructurados, rate limiting y su script de prueba (`tutoriales/rate-limit/`).
 - Nuevos artefactos del obligatorio: scripts de ML (Isolation Forest, SVM RBF), runbooks, diagramas, evidencias.
 
 Para ubicar archivos usar `git ls-files`, `ls` o Glob por **nombre**, nunca por contenido en las carpetas prohibidas.
