@@ -41,7 +41,7 @@ Combinar **B + C**: ingress con límite compartido y health checks pasivos de YA
 
 ## Pendientes y preguntas abiertas
 
-- `appsettings*.json` del gateway es configuración, pero está dentro de `Backend/`, que la regla prohíbe: pedir al equipo que lo habilite antes de leerlo.
+- `appsettings*.json` del gateway es configuración y la regla actualizada de `CLAUDE.md` permite leerla: es el primer paso de la iteración.
 - Definir cómo se prueba una "falla reiterada": inyectar errores con un script de caos (por ejemplo, detener o cortar Users) mientras `load-requests.sh` genera tráfico, y registrar códigos 5xx y 429 más el tiempo de recuperación.
 - Evidencia a guardar en `docs/evidencias/` cuando se ejecute cualquier prueba.
 
