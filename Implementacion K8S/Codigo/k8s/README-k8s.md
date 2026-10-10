@@ -1,6 +1,11 @@
-# Despliegue de PharmaGo en Kubernetes (Minikube)
+# Despliegue de PharmaGo en Kubernetes
 
-Esta guía describe cómo desplegar la aplicación PharmaGo en un cluster de Kubernetes usando Minikube con un solo nodo.
+Esta guía describe el perfil **local** de PharmaGo, usando Minikube con un solo nodo.
+También hay un perfil **multinode** que exige separar Gateway, Users y Pharmacy por nodo.
+
+Los scripts usan el contexto actual de `kubectl`; el perfil predeterminado es `local`.
+Para inspeccionar los YAML sin acceder al clúster: `kubectl kustomize overlays/local`
+o `kubectl kustomize overlays/multinode`.
 
 ## Arquitectura
 
@@ -120,7 +125,7 @@ kubectl apply -f deployments/ops/
 
 # 7. Backend services
 kubectl apply -f services/backend/
-kubectl apply -f deployments/backend/
+kubectl apply -k overlays/local
 
 # 8. Frontend
 kubectl apply -f services/frontend/
@@ -217,6 +222,9 @@ spec:
 Luego aplica los cambios:
 
 ```bash
+# Backend: conservar el perfil elegido al volver a aplicar cambios.
+kubectl apply -k overlays/local   # o overlays/multinode
+# Frontend / ops: aplicar el manifiesto correspondiente.
 kubectl apply -f deployments/<component>/<deployment>.yaml
 ```
 
