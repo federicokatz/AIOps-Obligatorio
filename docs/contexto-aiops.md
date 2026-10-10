@@ -1,6 +1,6 @@
 # Contexto compartido del obligatorio AIOps
 
-Este archivo es el punto de partida para las siguientes iteraciones del equipo. Antes de trabajar, leer `AGENTS.md`: la exploración de lógica de negocio .NET y del frontend Angular está restringida. Registrar aquí decisiones, evidencia y próximos pasos sin repetir una inspección general del template.
+Este archivo es el punto de partida para las siguientes iteraciones del equipo. Antes de trabajar, leer `CLAUDE.md`: la exploración de lógica de negocio .NET y del frontend Angular está restringida. Registrar aquí decisiones, evidencia y próximos pasos sin repetir una inspección general del template.
 
 ## Rúbrica y secuencia acordada
 
@@ -52,7 +52,7 @@ En los nueve intentos se observó `NotReady`, aumentó `restartCount` de 0 a 1, 
 - El equipo ampliará Minikube local más adelante. Varios nodos de Minikube en una sola computadora demuestran separación entre nodos Kubernetes, pero no cumplen literalmente “nodos físicos” distintos de la rúbrica. Explicitarlo en el informe.
 - `/health` es superficial: un 200 no prueba conectividad con SQL Server ni éxito de operaciones de negocio. Las fallas de dependencias se cubrirán con telemetría y el plan de incidentes.
 - No ejecutar `apply-k8s.ps1` para esta iteración: su limpieza de PVs no es necesaria. Aplicar solo los tres deployments backend tras cargar la nueva imagen del gateway.
-- Conservar los cambios preexistentes en `Backend/seed-data.sql`, `AGENTS.md` y la letra del obligatorio.
+- Conservar los cambios preexistentes en `Backend/seed-data.sql`, `CLAUDE.md` y la letra del obligatorio.
 
 ## Registro de iteraciones
 
