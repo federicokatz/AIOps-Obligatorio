@@ -18,6 +18,11 @@ spec:
     spec:
       serviceAccountName: fluent-bit
       tolerations:
+        # Recolectar logs también en los nodos reservados para backend.
+        - key: pharmago.io/dedicated
+          operator: Equal
+          value: backend
+          effect: NoSchedule
         - key: node-role.kubernetes.io/master
           operator: Exists
           effect: NoSchedule

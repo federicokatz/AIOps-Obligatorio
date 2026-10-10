@@ -21,6 +21,22 @@ spec:
               - key: node-type
                 operator: In
                 values: [backend, all]
+        # Perfil local: evitar compartir nodo con los otros servicios si es posible.
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values: [pharmago-users-service, pharmago-pharmacy-service]
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+      - key: pharmago.io/dedicated
+        operator: Equal
+        value: backend
+        effect: NoSchedule
       containers:
       - name: pharmago-api-gateway
         image: pharmago-api-gateway:latest
