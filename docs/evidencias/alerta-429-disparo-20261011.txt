@@ -1,0 +1,3 @@
+# Disparo real de la alerta de 429 (11-10-2026)
+carga sostenida de ~50 s al gateway desde un pod del cluster
+t+8s inactive; t+16s pending; t+24s pending; t+32s firing
