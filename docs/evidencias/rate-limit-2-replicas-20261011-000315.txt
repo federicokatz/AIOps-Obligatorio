@@ -1,0 +1,6 @@
+# Rate limiting con 2 replicas del gateway (solicitudes desde un pod dentro del cluster, via Service)
+date_utc=2026-10-11T00:03:16Z
+config: modo IP, 100/min y 1000/h por replica (valores por defecto)
+corrida 1 (120 solicitudes, contadores en cero): ok200=120 rate_limited429=0 other=0
+corrida 2 (250 solicitudes, contadores en cero): ok200=200 rate_limited429=50 other=0
+linea base 1 replica (120 solicitudes): ok200=100 rate_limited429=20 (ver rate-limit-baseline-*.txt)

@@ -1,0 +1,8 @@
+# kubectl get pods -n pharmago -o wide  (11-10-2026, Minikube de un nodo; gateway con 2 replicas)
+NAME                                         READY   STATUS    RESTARTS   AGE     IP             NODE
+pharmago-api-gateway-878c76bff-flr8m         1/1     Running   0          11m     10.244.0.34    minikube
+pharmago-api-gateway-878c76bff-nq7nf         1/1     Running   0          11m     10.244.0.35    minikube
+pharmago-pharmacy-service-65f64f46c4-fdrh5   1/1     Running   0          4m27s   10.244.0.40    minikube
+pharmago-users-service-8bcd5dbc8-6r7vv       1/1     Running   0          57m     10.244.0.12    minikube
+(resto de pods del namespace omitidos: db, ui, grafana, prometheus, elasticsearch, kibana, fluent-bit, node-exporter, otlp-collector; todos 1/1 Running)
+Nota: las 2 replicas del gateway comparten el unico nodo (perfil local). La separacion por nodos requiere el perfil multinode.

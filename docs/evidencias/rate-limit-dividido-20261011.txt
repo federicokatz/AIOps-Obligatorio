@@ -1,0 +1,8 @@
+# Rate limiting con 2 replicas y limite dividido por replica (11-10-2026, Minikube de un nodo)
+config: IpRateLimiting en gateway-resilience ConfigMap: 50/min y 500/h por replica (total esperado 100/min y 1000/h), login 5/min por replica
+solicitudes desde un pod del cluster, via Service, ventana de 1 min entre corridas
+solicitudes=250 ok200=100 rate_limited429=150 other=0
+solicitudes=250 ok200=100 rate_limited429=150 other=0
+solicitudes=120 ok200=100 rate_limited429=20 other=0
+solicitudes=120 ok200=100 rate_limited429=20 other=0
+referencia: sin dividir el limite, 2 replicas dieron ok200=200 de 250 (ver rate-limit-2-replicas-*.txt)
