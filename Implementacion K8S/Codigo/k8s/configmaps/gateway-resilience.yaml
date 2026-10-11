@@ -7,8 +7,17 @@ data:
   # Circuit breaker aproximado con health checks activos de YARP: sondea /health de cada servicio y,
   # si no queda destino sano, responde 503 al instante en vez de reintentar la conexion.
   # Se superpone a appsettings.json de la imagen; no requiere reconstruirla.
+  # Rate limiting: los contadores son por replica (en memoria), asi que con N replicas el limite se multiplica.
+  # Se configura limite_total / N por replica (aqui N=2). Es aproximado: kube-proxy reparte al azar.
   appsettings.Production.json: |
     {
+      "IpRateLimiting": {
+        "GeneralRules": [
+          { "Endpoint": "POST:/api/login", "Period": "1m", "Limit": 5 },
+          { "Endpoint": "*", "Period": "1m", "Limit": 50 },
+          { "Endpoint": "*", "Period": "1h", "Limit": 500 }
+        ]
+      },
       "ReverseProxy": {
         "Clusters": {
           "users-cluster": {
