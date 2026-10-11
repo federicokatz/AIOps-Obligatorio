@@ -34,10 +34,9 @@ El 503 inmediato protege al gateway y al backend: no se acumulan conexiones ni h
 - Una sola ejecución por escenario; repetir antes del informe.
 - El rate limiting sigue siendo por réplica (ver iteración 02): este cambio no lo resuelve.
 
-## Pendiente de verificar por el equipo
+## Verificación de la alerta (capturas)
 
-- Que la alerta "Servicio caído" de Grafana se dispare en este mismo escenario (no se comprobó).
-- Captura de pantalla sugerida para el informe: panel de peticiones por endpoint y Alerting con Pharmacy caído; guardar en `docs/evidencias/capturas/`.
+Con Pharmacy a 0 réplicas, la regla "Servicio caído (target down)" de Grafana pasó a `Firing` (captura: ["Firing for 40s"](evidencias/capturas/20261011-alerta-servicio-caido.png)) mientras las otras 6 reglas seguían `Normal`. Dashboard "PharmaGo - Overview" durante la prueba: [captura](evidencias/capturas/20261011-alerta-servicio-caido-grafana.png). Esto confirma que la alerta detecta la misma falla que activa el circuit breaker.
 
 ## Uso de IA
 

@@ -24,6 +24,8 @@ Evidencia en [`evidencias/rate-limit-dividido-20261011.txt`](evidencias/rate-lim
 
 El total efectivo vuelve a ser 100/min, igual que la línea base con 1 réplica (100 y 20) y distinto de la medición sin dividir (200 de 250).
 
+Estado de los pods con las 2 réplicas: [`evidencias/pods-2-replicas-gateway-20261011.txt`](evidencias/pods-2-replicas-gateway-20261011.txt). En el perfil `local` ambas réplicas comparten el único nodo.
+
 ## Limitaciones (explicitar en el informe)
 
 - **Aproximado:** kube-proxy reparte al azar. Con tráfico cercano al límite, una réplica puede rechazar (429) mientras la otra aún tiene cupo, o a la inversa. Las pruebas usaron 120 y 250 solicitudes, muy por encima del límite, donde ambas réplicas se saturan.
