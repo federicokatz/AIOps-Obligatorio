@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-resilience
+  namespace: pharmago
+data:
+  # Circuit breaker aproximado con health checks activos de YARP: sondea /health de cada servicio y,
+  # si no queda destino sano, responde 503 al instante en vez de reintentar la conexion.
+  # Se superpone a appsettings.json de la imagen; no requiere reconstruirla.
+  appsettings.Production.json: |
+    {
+      "ReverseProxy": {
+        "Clusters": {
+          "users-cluster": {
+            "HealthCheck": {
+              "AvailableDestinationsPolicy": "HealthyAndUnknown",
+              "Active": { "Enabled": true, "Interval": "00:00:03", "Timeout": "00:00:02", "Policy": "ConsecutiveFailures", "Path": "/health" }
+            },
+            "Metadata": { "ConsecutiveFailuresHealthPolicy.Threshold": "2" }
+          },
+          "pharmacy-cluster": {
+            "HealthCheck": {
+              "AvailableDestinationsPolicy": "HealthyAndUnknown",
+              "Active": { "Enabled": true, "Interval": "00:00:03", "Timeout": "00:00:02", "Policy": "ConsecutiveFailures", "Path": "/health" }
+            },
+            "Metadata": { "ConsecutiveFailuresHealthPolicy.Threshold": "2" }
+          }
+        }
+      }
+    }
