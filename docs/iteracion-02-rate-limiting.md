@@ -48,3 +48,20 @@ Combinar **B + C**: ingress con límite compartido y health checks pasivos de YA
 ## Uso de IA
 
 Análisis y redacción asistidos por Claude Code (lectura de documentación del repo y síntesis). Las conclusiones están marcadas como hipótesis cuando no se verificaron; hay que revisarlas y medirlas antes de incluirlas en el informe.
+
+## Resultados medidos (11-10-2026, Minikube de un nodo)
+
+Configuración: modo IP, 100 solicitudes/min y 1000/h, valores por defecto. Evidencia en `docs/evidencias/rate-limit-*.txt`.
+
+| Prueba | Réplicas del gateway | Solicitudes | 200 | 429 |
+| --- | ---: | ---: | ---: | ---: |
+| Línea base (`test-rate-limit.sh`, vía port-forward) | 1 | 120 | 100 | 20 |
+| Desde un pod del clúster, vía Service, contadores en cero | 2 | 120 | 120 | 0 |
+| Ídem | 2 | 250 | 200 | 50 |
+
+**Conclusión 1 confirmada:** con 2 réplicas el límite efectivo pasó de 100 a ~200 solicitudes/min, es decir, N × el valor configurado, porque cada réplica lleva su propio contador. Caveat: todas las solicitudes salieron de un mismo pod (misma IP de origen) y el reparto entre réplicas lo hace kube-proxy; la prueba es de una sola ejecución por caso.
+
+Otros hallazgos:
+- Grafana tiene **0 reglas de alerta** definidas (API `/api/v1/provisioning/alert-rules` devuelve `[]`); la rúbrica pide al menos 5.
+- El dashboard "PharmaGo - Overview" muestra "No data" en los paneles de 429 hasta que el gateway rechaza solicitudes: sirve para validar el rate limiting en las próximas pruebas.
+- El gateway se devolvió a 1 réplica (`kubectl scale`) para no dejar divergencia entre el clúster y los manifiestos.
