@@ -1,0 +1,11 @@
+context=minikube
+namespace=pharmago
+deployment=pharmago-ui
+old_image=pharmago-ui:latest
+new_image=pharmago-ui:prueba-v2
+url=http://pharmago-ui/
+expected_status=200
+interval_seconds=2
+request_timeout_seconds=5
+exit_code=0
+completed=true

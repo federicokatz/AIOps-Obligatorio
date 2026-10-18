@@ -1,0 +1,11 @@
+context=minikube
+namespace=pharmago
+deployment=pharmago-pharmacy-service
+old_image=pharmago-pharmacy-service:latest
+new_image=pharmago-pharmacy-service:prueba-v2
+url=http://pharmago-api-gateway/api/drug
+expected_status=200
+interval_seconds=2
+request_timeout_seconds=5
+exit_code=0
+completed=true

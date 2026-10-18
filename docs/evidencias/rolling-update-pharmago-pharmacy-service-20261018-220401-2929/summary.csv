@@ -1,0 +1,5 @@
+phase,requests,successful,failed,availability_percent,max_seconds
+baseline,11,11,0,100.00,0.050354
+update,31,31,0,100.00,0.015115
+after,0,0,0,0.00,0.000000
+all,42,42,0,100.00,

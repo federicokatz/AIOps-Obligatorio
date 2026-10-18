@@ -1,0 +1,359 @@
+LAST SEEN   TYPE      REASON              OBJECT                                            MESSAGE
+34d         Normal    ScalingReplicaSet   deployment/pharmago-db                            Scaled up replica set pharmago-db-6bbb5b4d4c from 0 to 1
+34d         Normal    Scheduled           pod/pharmago-db-6bbb5b4d4c-wkpsc                  Successfully assigned pharmago/pharmago-db-6bbb5b4d4c-wkpsc to minikube
+34d         Normal    Pulling             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pulling image "busybox:latest"
+34d         Normal    SuccessfulCreate    replicaset/pharmago-db-6bbb5b4d4c                 Created pod: pharmago-db-6bbb5b4d4c-wkpsc
+34d         Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Successfully pulled image "busybox:latest" in 3.834s (3.834s including waiting). Image size: 4445830 bytes.
+34d         Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+34d         Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+34d         Normal    Pulling             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pulling image "mcr.microsoft.com/mssql/server:2019-latest"
+34d         Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+34d         Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Successfully pulled image "mcr.microsoft.com/mssql/server:2019-latest" in 2m51.217s (2m51.217s including waiting). Image size: 1490725211 bytes.
+34d         Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+34d         Normal    Scheduled           pod/elasticsearch-5b89ffb8b4-8mv2b                Successfully assigned pharmago/elasticsearch-5b89ffb8b4-8mv2b to minikube
+34d         Normal    SuccessfulCreate    replicaset/elasticsearch-5b89ffb8b4               Created pod: elasticsearch-5b89ffb8b4-8mv2b
+34d         Normal    ScalingReplicaSet   deployment/elasticsearch                          Scaled up replica set elasticsearch-5b89ffb8b4 from 0 to 1
+34d         Normal    Pulling             pod/elasticsearch-5b89ffb8b4-8mv2b                Pulling image "busybox:latest"
+34d         Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+34d         Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Successfully pulled image "busybox:latest" in 1.256s (1.256s including waiting). Image size: 4445830 bytes.
+34d         Normal    Pulling             pod/elasticsearch-5b89ffb8b4-8mv2b                Pulling image "docker.elastic.co/elasticsearch/elasticsearch:8.11.0"
+34d         Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+34d         Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Successfully pulled image "docker.elastic.co/elasticsearch/elasticsearch:8.11.0" in 1m1.167s (1m1.167s including waiting). Image size: 1410282319 bytes.
+34d         Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+34d         Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+34d         Normal    Scheduled           pod/otlp-collector-75b4c44d4f-sjqs7               Successfully assigned pharmago/otlp-collector-75b4c44d4f-sjqs7 to minikube
+34d         Normal    ScalingReplicaSet   deployment/otlp-collector                         Scaled up replica set otlp-collector-75b4c44d4f from 0 to 1
+34d         Normal    SuccessfulCreate    replicaset/otlp-collector-75b4c44d4f              Created pod: otlp-collector-75b4c44d4f-sjqs7
+34d         Normal    SuccessfulCreate    replicaset/prometheus-848847c68f                  Created pod: prometheus-848847c68f-7m584
+34d         Normal    SuccessfulCreate    daemonset/node-exporter                           Created pod: node-exporter-lj2mf
+34d         Normal    ScalingReplicaSet   deployment/prometheus                             Scaled up replica set prometheus-848847c68f from 0 to 1
+34d         Normal    Scheduled           pod/grafana-59dc564875-gx624                      Successfully assigned pharmago/grafana-59dc564875-gx624 to minikube
+34d         Normal    SuccessfulCreate    replicaset/grafana-59dc564875                     Created pod: grafana-59dc564875-gx624
+34d         Normal    ScalingReplicaSet   deployment/grafana                                Scaled up replica set grafana-59dc564875 from 0 to 1
+34d         Normal    Scheduled           pod/node-exporter-lj2mf                           Successfully assigned pharmago/node-exporter-lj2mf to minikube
+34d         Normal    Scheduled           pod/prometheus-848847c68f-7m584                   Successfully assigned pharmago/prometheus-848847c68f-7m584 to minikube
+34d         Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "busybox:latest"
+34d         Normal    Pulling             pod/otlp-collector-75b4c44d4f-sjqs7               Pulling image "otel/opentelemetry-collector-contrib:latest"
+34d         Normal    Pulling             pod/kibana-5f5d89cc76-6q9b2                       Pulling image "docker.elastic.co/kibana/kibana:8.11.0"
+34d         Normal    Pulling             pod/node-exporter-lj2mf                           Pulling image "prom/node-exporter:v1.7.0"
+34d         Normal    Scheduled           pod/kibana-5f5d89cc76-6q9b2                       Successfully assigned pharmago/kibana-5f5d89cc76-6q9b2 to minikube
+34d         Normal    ScalingReplicaSet   deployment/kibana                                 Scaled up replica set kibana-5f5d89cc76 from 0 to 1
+34d         Normal    Pulling             pod/grafana-59dc564875-gx624                      Pulling image "busybox:1.36"
+34d         Normal    SuccessfulCreate    replicaset/kibana-5f5d89cc76                      Created pod: kibana-5f5d89cc76-6q9b2
+34d         Normal    SuccessfulCreate    daemonset/fluent-bit                              Created pod: fluent-bit-bxsv2
+34d         Normal    Scheduled           pod/fluent-bit-bxsv2                              Successfully assigned pharmago/fluent-bit-bxsv2 to minikube
+34d         Normal    Created             pod/pharmago-users-service-75f55796b-grvmz        Container created
+34d         Normal    ScalingReplicaSet   deployment/pharmago-users-service                 Scaled up replica set pharmago-users-service-75f55796b from 0 to 1
+34d         Normal    Scheduled           pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Successfully assigned pharmago/pharmago-pharmacy-service-5789d5b8c-4v7nv to minikube
+34d         Normal    SuccessfulCreate    replicaset/pharmago-users-service-75f55796b       Created pod: pharmago-users-service-75f55796b-grvmz
+34d         Normal    Started             pod/pharmago-users-service-75f55796b-grvmz        Container started
+34d         Normal    SuccessfulCreate    replicaset/pharmago-pharmacy-service-5789d5b8c    Created pod: pharmago-pharmacy-service-5789d5b8c-4v7nv
+34d         Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled up replica set pharmago-pharmacy-service-5789d5b8c from 0 to 1
+34d         Normal    Pulled              pod/pharmago-users-service-75f55796b-grvmz        Container image "pharmago-users-service:latest" already present on machine and can be accessed by the pod
+34d         Normal    Pulling             pod/fluent-bit-bxsv2                              Pulling image "fluent/fluent-bit:2.2.2"
+34d         Normal    Scheduled           pod/pharmago-api-gateway-b9b878fff-f6ckz          Successfully assigned pharmago/pharmago-api-gateway-b9b878fff-f6ckz to minikube
+34d         Normal    SuccessfulCreate    replicaset/pharmago-api-gateway-b9b878fff         Created pod: pharmago-api-gateway-b9b878fff-f6ckz
+34d         Normal    ScalingReplicaSet   deployment/pharmago-api-gateway                   Scaled up replica set pharmago-api-gateway-b9b878fff from 0 to 1
+34d         Normal    Scheduled           pod/pharmago-users-service-75f55796b-grvmz        Successfully assigned pharmago/pharmago-users-service-75f55796b-grvmz to minikube
+34d         Normal    ScalingReplicaSet   deployment/pharmago-ui                            Scaled up replica set pharmago-ui-5c757fd885 from 0 to 1
+34d         Normal    Started             pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container started
+34d         Normal    Created             pod/pharmago-api-gateway-b9b878fff-f6ckz          Container created
+34d         Normal    Pulled              pod/pharmago-api-gateway-b9b878fff-f6ckz          Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+34d         Normal    Scheduled           pod/pharmago-ui-5c757fd885-x4nc7                  Successfully assigned pharmago/pharmago-ui-5c757fd885-x4nc7 to minikube
+34d         Normal    Created             pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container created
+34d         Normal    Started             pod/pharmago-api-gateway-b9b878fff-f6ckz          Container started
+34d         Normal    Pulled              pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container image "pharmago-pharmacy-service:latest" already present on machine and can be accessed by the pod
+34d         Normal    SuccessfulCreate    replicaset/pharmago-ui-5c757fd885                 Created pod: pharmago-ui-5c757fd885-x4nc7
+34d         Normal    Created             pod/pharmago-ui-5c757fd885-x4nc7                  Container created
+34d         Normal    Started             pod/pharmago-ui-5c757fd885-x4nc7                  Container started
+34d         Normal    Pulled              pod/pharmago-ui-5c757fd885-x4nc7                  Container image "pharmago-ui:latest" already present on machine and can be accessed by the pod
+34d         Normal    Pulled              pod/otlp-collector-75b4c44d4f-sjqs7               Successfully pulled image "otel/opentelemetry-collector-contrib:latest" in 10.652s (10.652s including waiting). Image size: 398656543 bytes.
+34d         Normal    Started             pod/otlp-collector-75b4c44d4f-sjqs7               Container started
+34d         Normal    Created             pod/otlp-collector-75b4c44d4f-sjqs7               Container created
+34d         Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+34d         Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "busybox:latest" in 1.28s (11.246s including waiting). Image size: 4445830 bytes.
+34d         Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+34d         Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "prom/prometheus:latest"
+34d         Normal    Started             pod/node-exporter-lj2mf                           Container started
+34d         Normal    Created             pod/node-exporter-lj2mf                           Container created
+34d         Normal    Pulled              pod/node-exporter-lj2mf                           Successfully pulled image "prom/node-exporter:v1.7.0" in 3.564s (14.582s including waiting). Image size: 22711784 bytes.
+34d         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+34d         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+34d         Normal    Pulled              pod/grafana-59dc564875-gx624                      Successfully pulled image "busybox:1.36" in 3.06s (17.267s including waiting). Image size: 4417166 bytes.
+34d         Normal    Pulled              pod/kibana-5f5d89cc76-6q9b2                       Successfully pulled image "docker.elastic.co/kibana/kibana:8.11.0" in 1m20.961s (1m37.91s including waiting). Image size: 1025578413 bytes.
+34d         Normal    Created             pod/kibana-5f5d89cc76-6q9b2                       Container created
+34d         Normal    Started             pod/kibana-5f5d89cc76-6q9b2                       Container started
+34d         Normal    Pulled              pod/fluent-bit-bxsv2                              Successfully pulled image "fluent/fluent-bit:2.2.2" in 11.788s (1m49.083s including waiting). Image size: 86691759 bytes.
+34d         Normal    Created             pod/fluent-bit-bxsv2                              Container created
+34d         Normal    Started             pod/fluent-bit-bxsv2                              Container started
+34d         Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "prom/prometheus:latest" in 13.336s (1m51.558s including waiting). Image size: 260925355 bytes.
+34d         Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+34d         Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: Get "http://10.244.0.8:5601/api/status": dial tcp 10.244.0.8:5601: connect: connection refused
+34d         Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+34d         Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "busybox:1.36" already present on machine and can be accessed by the pod
+34d         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+34d         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+34d         Normal    Pulling             pod/grafana-59dc564875-gx624                      Pulling image "grafana/grafana:10.4.2"
+34d         Normal    Pulled              pod/grafana-59dc564875-gx624                      Successfully pulled image "grafana/grafana:10.4.2" in 15.679s (15.679s including waiting). Image size: 429263997 bytes.
+34d         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+34d         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+8d          Normal    SandboxChanged      pod/kibana-5f5d89cc76-6q9b2                       Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulled              pod/node-exporter-lj2mf                           Container image "prom/node-exporter:v1.7.0" already present on machine and can be accessed by the pod
+8d          Normal    SandboxChanged      pod/elasticsearch-5b89ffb8b4-8mv2b                Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulling             pod/elasticsearch-5b89ffb8b4-8mv2b                Pulling image "busybox:latest"
+8d          Normal    Pulled              pod/pharmago-users-service-75f55796b-grvmz        Container image "pharmago-users-service:latest" already present on machine and can be accessed by the pod
+8d          Normal    SandboxChanged      pod/pharmago-users-service-75f55796b-grvmz        Pod sandbox changed, it will be killed and re-created.
+8d          Normal    SandboxChanged      pod/pharmago-api-gateway-b9b878fff-f6ckz          Pod sandbox changed, it will be killed and re-created.
+8d          Normal    SandboxChanged      pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulled              pod/pharmago-api-gateway-b9b878fff-f6ckz          Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+8d          Normal    SandboxChanged      pod/pharmago-ui-5c757fd885-x4nc7                  Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulled              pod/pharmago-ui-5c757fd885-x4nc7                  Container image "pharmago-ui:latest" already present on machine and can be accessed by the pod
+8d          Normal    SandboxChanged      pod/prometheus-848847c68f-7m584                   Pod sandbox changed, it will be killed and re-created.
+8d          Normal    SandboxChanged      pod/node-exporter-lj2mf                           Pod sandbox changed, it will be killed and re-created.
+8d          Normal    SandboxChanged      pod/otlp-collector-75b4c44d4f-sjqs7               Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Created             pod/node-exporter-lj2mf                           Container created
+8d          Normal    Started             pod/node-exporter-lj2mf                           Container started
+8d          Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "busybox:latest"
+8d          Normal    SandboxChanged      pod/fluent-bit-bxsv2                              Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulled              pod/fluent-bit-bxsv2                              Container image "fluent/fluent-bit:2.2.2" already present on machine and can be accessed by the pod
+8d          Normal    Pulling             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pulling image "busybox:latest"
+8d          Normal    Pulling             pod/otlp-collector-75b4c44d4f-sjqs7               Pulling image "otel/opentelemetry-collector-contrib:latest"
+8d          Normal    Pulled              pod/kibana-5f5d89cc76-6q9b2                       Container image "docker.elastic.co/kibana/kibana:8.11.0" already present on machine and can be accessed by the pod
+8d          Normal    SandboxChanged      pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pod sandbox changed, it will be killed and re-created.
+8d          Normal    SandboxChanged      pod/grafana-59dc564875-gx624                      Pod sandbox changed, it will be killed and re-created.
+8d          Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "busybox:1.36" already present on machine and can be accessed by the pod
+8d          Normal    Started             pod/kibana-5f5d89cc76-6q9b2                       Container started
+8d          Normal    Started             pod/fluent-bit-bxsv2                              Container started
+8d          Normal    Created             pod/kibana-5f5d89cc76-6q9b2                       Container created
+8d          Normal    Created             pod/pharmago-users-service-75f55796b-grvmz        Container created
+8d          Normal    Started             pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container started
+8d          Normal    Created             pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container created
+8d          Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+8d          Normal    Created             pod/fluent-bit-bxsv2                              Container created
+8d          Normal    Started             pod/pharmago-ui-5c757fd885-x4nc7                  Container started
+8d          Normal    Started             pod/pharmago-api-gateway-b9b878fff-f6ckz          Container started
+8d          Normal    Created             pod/pharmago-api-gateway-b9b878fff-f6ckz          Container created
+8d          Normal    Created             pod/pharmago-ui-5c757fd885-x4nc7                  Container created
+8d          Normal    Started             pod/pharmago-users-service-75f55796b-grvmz        Container started
+8d          Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+8d          Normal    Pulled              pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Container image "pharmago-pharmacy-service:latest" already present on machine and can be accessed by the pod
+8d          Normal    Started             pod/otlp-collector-75b4c44d4f-sjqs7               Container started
+8d          Normal    Created             pod/otlp-collector-75b4c44d4f-sjqs7               Container created
+8d          Normal    Pulled              pod/otlp-collector-75b4c44d4f-sjqs7               Successfully pulled image "otel/opentelemetry-collector-contrib:latest" in 11.751s (11.751s including waiting). Image size: 407682396 bytes.
+8d          Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "busybox:latest" in 3.204s (14.568s including waiting). Image size: 4445830 bytes.
+8d          Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+8d          Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+8d          Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+8d          Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Container image "docker.elastic.co/elasticsearch/elasticsearch:8.11.0" already present on machine and can be accessed by the pod
+8d          Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Successfully pulled image "busybox:latest" in 1.273s (15.837s including waiting). Image size: 4445830 bytes.
+8d          Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+8d          Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+8d          Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "prom/prometheus:latest"
+8d          Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+8d          Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Successfully pulled image "busybox:latest" in 1.252s (17.071s including waiting). Image size: 4445830 bytes.
+8d          Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+8d          Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container image "mcr.microsoft.com/mssql/server:2019-latest" already present on machine and can be accessed by the pod
+8d          Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+8d          Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+8d          Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+8d          Warning   Unhealthy           pod/pharmago-users-service-75f55796b-grvmz        Startup probe failed: Get "http://10.244.0.15:80/health": dial tcp 10.244.0.15:80: connect: connection refused
+8d          Warning   BackOff             pod/pharmago-users-service-75f55796b-grvmz        Back-off restarting failed container pharmago-users-service in pod pharmago-users-service-75f55796b-grvmz_pharmago(81b952e6-17a6-41a9-a696-0de8226824b6)
+8d          Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+8d          Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "prom/prometheus:latest" in 15.14s (16.818s including waiting). Image size: 265582474 bytes.
+8d          Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+8d          Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: Get "http://10.244.0.19:5601/api/status": dial tcp 10.244.0.19:5601: connect: connection refused
+8d          Warning   Unhealthy           pod/pharmago-ui-5c757fd885-x4nc7                  Readiness probe failed: Get "http://10.244.0.18:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+8d          Warning   Unhealthy           pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Readiness probe failed: Get "http://10.244.0.24:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+8d          Warning   Unhealthy           pod/pharmago-ui-5c757fd885-x4nc7                  Liveness probe failed: Get "http://10.244.0.18:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+8d          Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "busybox:1.36" already present on machine and can be accessed by the pod
+8d          Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "grafana/grafana:10.4.2" already present on machine and can be accessed by the pod
+8d          Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+8d          Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+8d          Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+8d          Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+8d          Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: HTTP probe failed with statuscode: 503
+8d          Warning   Unhealthy           pod/pharmago-users-service-75f55796b-grvmz        Readiness probe failed: Get "http://10.244.0.15:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+8d          Warning   Unhealthy           pod/prometheus-848847c68f-7m584                   Readiness probe failed: Get "http://10.244.0.22:9090/-/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+8d          Normal    Killing             pod/fluent-bit-bxsv2                              Stopping container fluent-bit
+8d          Normal    SuccessfulDelete    daemonset/fluent-bit                              Deleted pod: fluent-bit-bxsv2
+8d          Normal    Scheduled           pod/pharmago-users-service-7bd954b9b9-fcrgq       Successfully assigned pharmago/pharmago-users-service-7bd954b9b9-fcrgq to minikube
+8d          Normal    ScalingReplicaSet   deployment/pharmago-users-service                 Scaled up replica set pharmago-users-service-7bd954b9b9 from 0 to 1
+8d          Normal    SuccessfulCreate    replicaset/pharmago-users-service-7bd954b9b9      Created pod: pharmago-users-service-7bd954b9b9-fcrgq
+8d          Normal    SuccessfulCreate    replicaset/pharmago-pharmacy-service-7f7b6b66fc   Created pod: pharmago-pharmacy-service-7f7b6b66fc-trh7t
+8d          Normal    ScalingReplicaSet   deployment/pharmago-api-gateway                   Scaled up replica set pharmago-api-gateway-5d5fff8cd5 from 0 to 1
+8d          Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled up replica set pharmago-pharmacy-service-7f7b6b66fc from 0 to 1
+8d          Normal    Scheduled           pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Successfully assigned pharmago/pharmago-pharmacy-service-7f7b6b66fc-trh7t to minikube
+8d          Normal    Scheduled           pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Successfully assigned pharmago/pharmago-api-gateway-5d5fff8cd5-jnk5k to minikube
+8d          Normal    SuccessfulCreate    replicaset/pharmago-api-gateway-5d5fff8cd5        Created pod: pharmago-api-gateway-5d5fff8cd5-jnk5k
+8d          Normal    Created             pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container created
+8d          Normal    Created             pod/pharmago-users-service-7bd954b9b9-fcrgq       Container created
+8d          Normal    Pulled              pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container image "pharmago-pharmacy-service:latest" already present on machine and can be accessed by the pod
+8d          Normal    Created             pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container created
+8d          Normal    Started             pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container started
+8d          Normal    Started             pod/pharmago-users-service-7bd954b9b9-fcrgq       Container started
+8d          Normal    Pulled              pod/pharmago-users-service-7bd954b9b9-fcrgq       Container image "pharmago-users-service:latest" already present on machine and can be accessed by the pod
+8d          Normal    Started             pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container started
+8d          Normal    Pulled              pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+8d          Normal    Scheduled           pod/fluent-bit-sccc7                              Successfully assigned pharmago/fluent-bit-sccc7 to minikube
+8d          Normal    SuccessfulCreate    daemonset/fluent-bit                              Created pod: fluent-bit-sccc7
+8d          Normal    Started             pod/fluent-bit-sccc7                              Container started
+8d          Normal    Pulled              pod/fluent-bit-sccc7                              Container image "fluent/fluent-bit:2.2.2" already present on machine and can be accessed by the pod
+8d          Normal    Created             pod/fluent-bit-sccc7                              Container created
+8d          Normal    Killing             pod/pharmago-api-gateway-b9b878fff-f6ckz          Stopping container pharmago-api-gateway
+8d          Normal    ScalingReplicaSet   deployment/pharmago-users-service                 Scaled down replica set pharmago-users-service-75f55796b from 1 to 0
+8d          Normal    ScalingReplicaSet   deployment/pharmago-api-gateway                   Scaled down replica set pharmago-api-gateway-b9b878fff from 1 to 0
+8d          Normal    Killing             pod/pharmago-users-service-75f55796b-grvmz        Stopping container pharmago-users-service
+8d          Normal    SuccessfulDelete    replicaset/pharmago-api-gateway-b9b878fff         Deleted pod: pharmago-api-gateway-b9b878fff-f6ckz
+8d          Normal    SuccessfulDelete    replicaset/pharmago-users-service-75f55796b       Deleted pod: pharmago-users-service-75f55796b-grvmz
+8d          Normal    SuccessfulDelete    replicaset/pharmago-pharmacy-service-5789d5b8c    Deleted pod: pharmago-pharmacy-service-5789d5b8c-4v7nv
+8d          Normal    Killing             pod/pharmago-pharmacy-service-5789d5b8c-4v7nv     Stopping container pharmago-pharmacy-service
+8d          Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled down replica set pharmago-pharmacy-service-5789d5b8c from 1 to 0
+37m         Normal    SandboxChanged      pod/elasticsearch-5b89ffb8b4-8mv2b                Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/grafana-59dc564875-gx624                      Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/otlp-collector-75b4c44d4f-sjqs7               Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/node-exporter-lj2mf                           Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/pharmago-ui-5c757fd885-x4nc7                  Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/kibana-5f5d89cc76-6q9b2                       Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/fluent-bit-sccc7                              Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/prometheus-848847c68f-7m584                   Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged      pod/pharmago-users-service-7bd954b9b9-fcrgq       Pod sandbox changed, it will be killed and re-created.
+37m         Normal    Pulled              pod/node-exporter-lj2mf                           Container image "prom/node-exporter:v1.7.0" already present on machine and can be accessed by the pod
+37m         Normal    Created             pod/kibana-5f5d89cc76-6q9b2                       Container created
+37m         Normal    Pulled              pod/kibana-5f5d89cc76-6q9b2                       Container image "docker.elastic.co/kibana/kibana:8.11.0" already present on machine and can be accessed by the pod
+37m         Normal    Pulled              pod/fluent-bit-sccc7                              Container image "fluent/fluent-bit:2.2.2" already present on machine and can be accessed by the pod
+37m         Normal    Pulled              pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container image "pharmago-pharmacy-service:latest" already present on machine and can be accessed by the pod
+37m         Normal    Created             pod/node-exporter-lj2mf                           Container created
+37m         Normal    Started             pod/node-exporter-lj2mf                           Container started
+37m         Normal    Created             pod/fluent-bit-sccc7                              Container created
+37m         Normal    Pulled              pod/pharmago-ui-5c757fd885-x4nc7                  Container image "pharmago-ui:latest" already present on machine and can be accessed by the pod
+37m         Normal    Pulling             pod/otlp-collector-75b4c44d4f-sjqs7               Pulling image "otel/opentelemetry-collector-contrib:latest"
+37m         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+37m         Normal    Started             pod/pharmago-ui-5c757fd885-x4nc7                  Container started
+36m         Normal    Pulled              pod/pharmago-users-service-7bd954b9b9-fcrgq       Container image "pharmago-users-service:latest" already present on machine and can be accessed by the pod
+36m         Normal    Created             pod/pharmago-users-service-7bd954b9b9-fcrgq       Container created
+36m         Normal    Started             pod/pharmago-users-service-7bd954b9b9-fcrgq       Container started
+37m         Normal    Pulling             pod/elasticsearch-5b89ffb8b4-8mv2b                Pulling image "busybox:latest"
+37m         Normal    Started             pod/fluent-bit-sccc7                              Container started
+37m         Normal    Created             pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container created
+37m         Normal    Started             pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Container started
+37m         Normal    Created             pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container created
+37m         Normal    Started             pod/kibana-5f5d89cc76-6q9b2                       Container started
+37m         Normal    Started             pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container started
+37m         Normal    Created             pod/pharmago-ui-5c757fd885-x4nc7                  Container created
+37m         Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "busybox:1.36" already present on machine and can be accessed by the pod
+37m         Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "busybox:latest"
+37m         Normal    Pulled              pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+37m         Normal    Pulling             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Pulling image "busybox:latest"
+37m         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+37m         Normal    Started             pod/otlp-collector-75b4c44d4f-sjqs7               Container started
+37m         Normal    Created             pod/otlp-collector-75b4c44d4f-sjqs7               Container created
+37m         Normal    Pulled              pod/otlp-collector-75b4c44d4f-sjqs7               Successfully pulled image "otel/opentelemetry-collector-contrib:latest" in 18.349s (18.349s including waiting). Image size: 419343708 bytes.
+37m         Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+37m         Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+37m         Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Successfully pulled image "busybox:latest" in 1.186s (16.278s including waiting). Image size: 4445830 bytes.
+37m         Normal    Created             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container created
+37m         Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "busybox:latest" in 1.223s (17.488s including waiting). Image size: 4445830 bytes.
+37m         Normal    Started             pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container started
+37m         Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+37m         Normal    Pulled              pod/pharmago-db-6bbb5b4d4c-wkpsc                  Container image "mcr.microsoft.com/mssql/server:2019-latest" already present on machine and can be accessed by the pod
+37m         Normal    Pulling             pod/prometheus-848847c68f-7m584                   Pulling image "prom/prometheus:latest"
+37m         Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+37m         Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+37m         Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Successfully pulled image "busybox:latest" in 1.223s (18.534s including waiting). Image size: 4445830 bytes.
+37m         Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+36m         Warning   Unhealthy           pod/pharmago-users-service-7bd954b9b9-fcrgq       Startup probe failed: Get "http://10.244.0.38:80/health": dial tcp 10.244.0.38:80: connect: connection refused
+37m         Normal    Pulled              pod/prometheus-848847c68f-7m584                   Successfully pulled image "prom/prometheus:latest" in 1.421s (2.184s including waiting). Image size: 265582474 bytes.
+37m         Normal    Created             pod/prometheus-848847c68f-7m584                   Container created
+37m         Normal    Started             pod/prometheus-848847c68f-7m584                   Container started
+29m         Warning   Unhealthy           pod/pharmago-ui-5c757fd885-x4nc7                  Readiness probe failed: Get "http://10.244.0.35:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+31m         Warning   Unhealthy           pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Readiness probe failed: Get "http://10.244.0.33:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+32m         Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: Get "http://10.244.0.30:5601/api/status": dial tcp 10.244.0.30:5601: connect: connection refused
+35m         Warning   Unhealthy           pod/pharmago-users-service-7bd954b9b9-fcrgq       Startup probe failed: Get "http://10.244.0.38:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+36m         Normal    Started             pod/elasticsearch-5b89ffb8b4-8mv2b                Container started
+28m         Warning   Unhealthy           pod/pharmago-ui-5c757fd885-x4nc7                  Liveness probe failed: Get "http://10.244.0.35:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+36m         Normal    Pulled              pod/elasticsearch-5b89ffb8b4-8mv2b                Container image "docker.elastic.co/elasticsearch/elasticsearch:8.11.0" already present on machine and can be accessed by the pod
+36m         Warning   Unhealthy           pod/pharmago-db-6bbb5b4d4c-wkpsc                  Readiness probe failed: dial tcp 10.244.0.37:1433: connect: connection refused
+36m         Normal    Created             pod/elasticsearch-5b89ffb8b4-8mv2b                Container created
+36m         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+36m         Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "busybox:1.36" already present on machine and can be accessed by the pod
+36m         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+36m         Normal    Created             pod/grafana-59dc564875-gx624                      Container created
+36m         Normal    Pulled              pod/grafana-59dc564875-gx624                      Container image "grafana/grafana:10.4.2" already present on machine and can be accessed by the pod
+36m         Normal    Started             pod/grafana-59dc564875-gx624                      Container started
+35m         Warning   Unhealthy           pod/grafana-59dc564875-gx624                      Startup probe failed: dial tcp 10.244.0.40:3000: connect: connection refused
+28m         Warning   Unhealthy           pod/pharmago-users-service-7bd954b9b9-fcrgq       Readiness probe failed: Get "http://10.244.0.38:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+34m         Warning   Unhealthy           pod/pharmago-users-service-7bd954b9b9-fcrgq       Liveness probe failed: Get "http://10.244.0.38:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+34m         Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: Get "http://10.244.0.30:5601/api/status": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m29s       Warning   Unhealthy           pod/prometheus-848847c68f-7m584                   Readiness probe failed: Get "http://10.244.0.36:9090/-/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+32m         Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Startup probe failed: HTTP probe failed with statuscode: 503
+33m         Warning   Unhealthy           pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Liveness probe failed: Get "http://10.244.0.33:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m6s        Warning   Unhealthy           pod/kibana-5f5d89cc76-6q9b2                       Readiness probe failed: Get "http://10.244.0.30:5601/api/status": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+25m         Normal    ScalingReplicaSet   deployment/pharmago-api-gateway                   Scaled up replica set pharmago-api-gateway-67f58567d8 from 0 to 1
+25m         Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled up replica set pharmago-pharmacy-service-56fc9b7c74 from 0 to 1
+25m         Normal    Scheduled           pod/pharmago-users-service-7b44d5586b-xrp8q       Successfully assigned pharmago/pharmago-users-service-7b44d5586b-xrp8q to minikube
+25m         Normal    Scheduled           pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Successfully assigned pharmago/pharmago-pharmacy-service-56fc9b7c74-zb4xg to minikube
+25m         Normal    Scheduled           pod/pharmago-api-gateway-67f58567d8-x82c7         Successfully assigned pharmago/pharmago-api-gateway-67f58567d8-x82c7 to minikube
+25m         Normal    SuccessfulCreate    replicaset/pharmago-pharmacy-service-56fc9b7c74   Created pod: pharmago-pharmacy-service-56fc9b7c74-zb4xg
+25m         Normal    SuccessfulCreate    replicaset/pharmago-api-gateway-67f58567d8        Created pod: pharmago-api-gateway-67f58567d8-x82c7
+25m         Normal    ScalingReplicaSet   deployment/pharmago-users-service                 Scaled up replica set pharmago-users-service-7b44d5586b from 0 to 1
+25m         Normal    SuccessfulCreate    replicaset/pharmago-users-service-7b44d5586b      Created pod: pharmago-users-service-7b44d5586b-xrp8q
+25m         Normal    Pulled              pod/pharmago-users-service-7b44d5586b-xrp8q       Container image "pharmago-users-service:latest" already present on machine and can be accessed by the pod
+25m         Normal    Created             pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Container created
+18m         Normal    Pulled              pod/pharmago-api-gateway-67f58567d8-x82c7         Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+18m         Normal    Started             pod/pharmago-api-gateway-67f58567d8-x82c7         Container started
+25m         Normal    Pulled              pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Container image "pharmago-pharmacy-service:latest" already present on machine and can be accessed by the pod
+18m         Normal    Created             pod/pharmago-api-gateway-67f58567d8-x82c7         Container created
+25m         Normal    Started             pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Container started
+25m         Normal    Started             pod/pharmago-users-service-7b44d5586b-xrp8q       Container started
+25m         Normal    Created             pod/pharmago-users-service-7b44d5586b-xrp8q       Container created
+25m         Normal    ScalingReplicaSet   deployment/pharmago-ui                            Scaled up replica set pharmago-ui-fb99b96bf from 0 to 1
+25m         Normal    Started             pod/pharmago-ui-fb99b96bf-7s4jw                   Container started
+25m         Normal    Created             pod/pharmago-ui-fb99b96bf-7s4jw                   Container created
+25m         Normal    SuccessfulCreate    replicaset/pharmago-ui-fb99b96bf                  Created pod: pharmago-ui-fb99b96bf-7s4jw
+25m         Normal    Pulled              pod/pharmago-ui-fb99b96bf-7s4jw                   Container image "pharmago-ui:latest" already present on machine and can be accessed by the pod
+25m         Normal    Scheduled           pod/pharmago-ui-fb99b96bf-7s4jw                   Successfully assigned pharmago/pharmago-ui-fb99b96bf-7s4jw to minikube
+19m         Warning   Unhealthy           pod/pharmago-api-gateway-67f58567d8-x82c7         Startup probe failed: HTTP probe failed with statuscode: 404
+24m         Normal    SuccessfulDelete    replicaset/pharmago-users-service-7bd954b9b9      Deleted pod: pharmago-users-service-7bd954b9b9-fcrgq
+24m         Normal    Killing             pod/pharmago-pharmacy-service-7f7b6b66fc-trh7t    Stopping container pharmago-pharmacy-service
+24m         Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled down replica set pharmago-pharmacy-service-7f7b6b66fc from 1 to 0
+24m         Normal    SuccessfulDelete    replicaset/pharmago-pharmacy-service-7f7b6b66fc   Deleted pod: pharmago-pharmacy-service-7f7b6b66fc-trh7t
+24m         Normal    ScalingReplicaSet   deployment/pharmago-users-service                 Scaled down replica set pharmago-users-service-7bd954b9b9 from 1 to 0
+24m         Normal    Killing             pod/pharmago-users-service-7bd954b9b9-fcrgq       Stopping container pharmago-users-service
+24m         Normal    SuccessfulDelete    replicaset/pharmago-ui-5c757fd885                 Deleted pod: pharmago-ui-5c757fd885-x4nc7
+24m         Normal    Killing             pod/pharmago-ui-5c757fd885-x4nc7                  Stopping container pharmago-ui
+24m         Normal    ScalingReplicaSet   deployment/pharmago-ui                            Scaled down replica set pharmago-ui-5c757fd885 from 1 to 0
+19m         Normal    Killing             pod/pharmago-api-gateway-67f58567d8-x82c7         Container pharmago-api-gateway failed startup probe, will be restarted
+16m         Normal    Killing             pod/pharmago-api-gateway-67f58567d8-x82c7         Stopping container pharmago-api-gateway
+16m         Normal    Scheduled           pod/pharmago-api-gateway-67f58567d8-6h2nh         Successfully assigned pharmago/pharmago-api-gateway-67f58567d8-6h2nh to minikube
+16m         Normal    SuccessfulCreate    replicaset/pharmago-api-gateway-67f58567d8        Created pod: pharmago-api-gateway-67f58567d8-6h2nh
+16m         Normal    Started             pod/pharmago-api-gateway-67f58567d8-6h2nh         Container started
+16m         Normal    Pulled              pod/pharmago-api-gateway-67f58567d8-6h2nh         Container image "pharmago-api-gateway:latest" already present on machine and can be accessed by the pod
+16m         Normal    Created             pod/pharmago-api-gateway-67f58567d8-6h2nh         Container created
+16m         Normal    ScalingReplicaSet   deployment/pharmago-api-gateway                   Scaled down replica set pharmago-api-gateway-5d5fff8cd5 from 1 to 0
+16m         Normal    Killing             pod/pharmago-api-gateway-5d5fff8cd5-jnk5k         Stopping container pharmago-api-gateway
+16m         Normal    SuccessfulDelete    replicaset/pharmago-api-gateway-5d5fff8cd5        Deleted pod: pharmago-api-gateway-5d5fff8cd5-jnk5k
+3m12s       Warning   Unhealthy           pod/pharmago-users-service-7b44d5586b-xrp8q       Readiness probe failed: Get "http://10.244.0.44:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m9s        Warning   Unhealthy           pod/pharmago-api-gateway-67f58567d8-6h2nh         Liveness probe failed: Get "http://10.244.0.46:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m12s       Warning   Unhealthy           pod/pharmago-users-service-7b44d5586b-xrp8q       Liveness probe failed: Get "http://10.244.0.44:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m5s        Warning   Unhealthy           pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Readiness probe failed: Get "http://10.244.0.43:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m6s        Warning   Unhealthy           pod/pharmago-api-gateway-67f58567d8-6h2nh         Readiness probe failed: Get "http://10.244.0.46:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m7s        Warning   Unhealthy           pod/pharmago-ui-fb99b96bf-7s4jw                   Readiness probe failed: Get "http://10.244.0.45:80/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m6s        Warning   Unhealthy           pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Liveness probe failed: Get "http://10.244.0.43:80/health": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+68s         Normal    Scheduled           pod/rolling-update-probe-20261018-214941-2484     Successfully assigned pharmago/rolling-update-probe-20261018-214941-2484 to minikube
+67s         Normal    Pulling             pod/rolling-update-probe-20261018-214941-2484     Pulling image "curlimages/curl:8.12.1"
+63s         Normal    Pulled              pod/rolling-update-probe-20261018-214941-2484     Successfully pulled image "curlimages/curl:8.12.1" in 3.768s (3.768s including waiting). Image size: 28132032 bytes.
+63s         Normal    Started             pod/rolling-update-probe-20261018-214941-2484     Container started
+63s         Normal    Created             pod/rolling-update-probe-20261018-214941-2484     Container created
+41s         Normal    Scheduled           pod/pharmago-pharmacy-service-6df8fdd8b5-vkkbl    Successfully assigned pharmago/pharmago-pharmacy-service-6df8fdd8b5-vkkbl to minikube
+41s         Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled up replica set pharmago-pharmacy-service-6df8fdd8b5 from 0 to 1
+41s         Normal    SuccessfulCreate    replicaset/pharmago-pharmacy-service-6df8fdd8b5   Created pod: pharmago-pharmacy-service-6df8fdd8b5-vkkbl
+40s         Normal    Created             pod/pharmago-pharmacy-service-6df8fdd8b5-vkkbl    Container created
+40s         Normal    Started             pod/pharmago-pharmacy-service-6df8fdd8b5-vkkbl    Container started
+40s         Normal    Pulled              pod/pharmago-pharmacy-service-6df8fdd8b5-vkkbl    Container image "pharmago-pharmacy-service:prueba-v2" already present on machine and can be accessed by the pod
+25s         Normal    ScalingReplicaSet   deployment/pharmago-pharmacy-service              Scaled down replica set pharmago-pharmacy-service-56fc9b7c74 from 1 to 0
+25s         Normal    Killing             pod/pharmago-pharmacy-service-56fc9b7c74-zb4xg    Stopping container pharmago-pharmacy-service
+25s         Normal    SuccessfulDelete    replicaset/pharmago-pharmacy-service-56fc9b7c74   Deleted pod: pharmago-pharmacy-service-56fc9b7c74-zb4xg
+1s          Normal    Killing             pod/rolling-update-probe-20261018-214941-2484     Stopping container rolling-update-probe-20261018-214941-2484

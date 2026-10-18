@@ -1,0 +1,6 @@
+NAME          DESIRED   UPDATED   AVAILABLE   IMAGE
+pharmago-ui   1         1         1           pharmago-ui:prueba-v2
+NAME                          READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pharmago-ui-887f5b888-mmrwk   1/1     Running   0          47s   10.244.0.52   minikube   <none>           <none>
+NAME                          IMAGE                   IMAGE_ID
+pharmago-ui-887f5b888-mmrwk   pharmago-ui:prueba-v2   docker://sha256:06c8b24243aa80303229b77dd6b400e6742f0fc5dfc4d47391fd581cb96525ca

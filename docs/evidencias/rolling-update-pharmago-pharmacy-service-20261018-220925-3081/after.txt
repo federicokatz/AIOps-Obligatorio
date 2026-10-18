@@ -1,0 +1,6 @@
+NAME                        DESIRED   UPDATED   AVAILABLE   IMAGE
+pharmago-pharmacy-service   1         1         1           pharmago-pharmacy-service:prueba-v2
+NAME                                         READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pharmago-pharmacy-service-6df8fdd8b5-7kvhn   1/1     Running   0          40s   10.244.0.60   minikube   <none>           <none>
+NAME                                         IMAGE                                 IMAGE_ID
+pharmago-pharmacy-service-6df8fdd8b5-7kvhn   pharmago-pharmacy-service:prueba-v2   docker://sha256:80aaeb9291d5f543de08ca83d2205c37950b12d847df4cd6ddd104d23f133414
