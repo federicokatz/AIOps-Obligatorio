@@ -5,6 +5,13 @@ metadata:
   namespace: pharmago
 spec:
   replicas: 1
+  # Mantener las replicas disponibles mientras arranca la nueva version.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  minReadySeconds: 10
   selector:
     matchLabels:
       app: pharmago-pharmacy-service
@@ -13,6 +20,8 @@ spec:
       labels:
         app: pharmago-pharmacy-service
     spec:
+      # Incluye 5 s de preStop y margen para terminar solicitudes en curso.
+      terminationGracePeriodSeconds: 45
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -41,6 +50,11 @@ spec:
       - name: pharmago-pharmacy-service
         image: pharmago-pharmacy-service:latest
         imagePullPolicy: Never
+        lifecycle:
+          preStop:
+            exec:
+              # Dar tiempo a que se retire el pod de los endpoints del Service.
+              command: ["/bin/sh", "-c", "sleep 5"]
         ports:
         - containerPort: 80
         env:

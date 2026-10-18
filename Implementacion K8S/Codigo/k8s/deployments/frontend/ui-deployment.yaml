@@ -5,6 +5,12 @@ metadata:
   namespace: pharmago
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  minReadySeconds: 10
   selector:
     matchLabels:
       app: pharmago-ui
@@ -13,6 +19,8 @@ spec:
       labels:
         app: pharmago-ui
     spec:
+      # Incluye 5 s de preStop y margen para terminar solicitudes en curso.
+      terminationGracePeriodSeconds: 45
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -25,6 +33,11 @@ spec:
       - name: pharmago-ui
         image: pharmago-ui:latest
         imagePullPolicy: Never
+        lifecycle:
+          preStop:
+            exec:
+              # Nginx sigue atendiendo mientras se propaga el retiro del endpoint.
+              command: ["/bin/sh", "-c", "sleep 5"]
         ports:
         - containerPort: 80
         resources:

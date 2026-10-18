@@ -1,0 +1,1 @@
+deployment.apps/pharmago-ui image updated

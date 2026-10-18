@@ -1,0 +1,6 @@
+NAME                   DESIRED   UPDATED   AVAILABLE   IMAGE
+pharmago-api-gateway   1         1         1           pharmago-api-gateway:latest
+NAME                                    READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pharmago-api-gateway-67f58567d8-6h2nh   1/1     Running   0          20m   10.244.0.46   minikube   <none>           <none>
+NAME                                    IMAGE                         IMAGE_ID
+pharmago-api-gateway-67f58567d8-6h2nh   pharmago-api-gateway:latest   docker://sha256:5bf370e967d101504520a3efb5b220461f3a48d4c8ecf7f1f7d4d29c7ed690c9

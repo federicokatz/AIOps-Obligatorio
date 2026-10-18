@@ -1,0 +1,6 @@
+NAME                     DESIRED   UPDATED   AVAILABLE   IMAGE
+pharmago-users-service   1         1         1           pharmago-users-service:latest
+NAME                                      READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+pharmago-users-service-7b44d5586b-xrp8q   1/1     Running   0          34m   10.244.0.44   minikube   <none>           <none>
+NAME                                      IMAGE                           IMAGE_ID
+pharmago-users-service-7b44d5586b-xrp8q   pharmago-users-service:latest   docker://sha256:d5d9bf17a368d3383a0db1240d91137edb78973678f6295d8b89baa2f3e3ed49
