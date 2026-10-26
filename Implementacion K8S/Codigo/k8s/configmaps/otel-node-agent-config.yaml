@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-node-agent-config
+  namespace: pharmago
+data:
+  agent.yaml: |
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: node-exporter
+            scrape_interval: 5s
+            static_configs:
+            - targets: ["${env:K8S_NODE_IP}:9100"]
+              labels:
+                node: "${env:K8S_NODE_NAME}"
+          - job_name: kubernetes-cadvisor
+            scrape_interval: 5s
+            scheme: https
+            metrics_path: "/api/v1/nodes/${env:K8S_NODE_NAME}/proxy/metrics/cadvisor"
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            static_configs:
+            - targets: [kubernetes.default.svc:443]
+              labels:
+                node: "${env:K8S_NODE_NAME}"
+            relabel_configs:
+            - target_label: instance
+              replacement: "${env:K8S_NODE_NAME}"
+            # Estas tres familias se obtienen de /metrics/resource para conservar
+            # container/namespace/pod tambien con el runtime Docker de Minikube.
+            metric_relabel_configs:
+            - source_labels: [__name__]
+              regex: 'container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_start_time_seconds'
+              action: drop
+          - job_name: kubernetes-kubelet-resources
+            scrape_interval: 5s
+            scheme: https
+            metrics_path: "/api/v1/nodes/${env:K8S_NODE_NAME}/proxy/metrics/resource"
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            static_configs:
+            - targets: [kubernetes.default.svc:443]
+              labels:
+                node: "${env:K8S_NODE_NAME}"
+            relabel_configs:
+            - target_label: instance
+              replacement: "${env:K8S_NODE_NAME}"
+            metric_relabel_configs:
+            - source_labels: [__name__]
+              regex: 'container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_start_time_seconds'
+              action: keep
+          # Solo descubre el recolector Docker del mismo nodo, si existe.
+          - job_name: cadvisor-network
+            scrape_interval: 5s
+            kubernetes_sd_configs:
+            - role: pod
+              namespaces:
+                names: [pharmago]
+              selectors:
+              - role: pod
+                label: app=cadvisor-network
+                field: "spec.nodeName=${env:K8S_NODE_NAME}"
+            relabel_configs:
+            - source_labels: [__meta_kubernetes_pod_ready]
+              regex: 'true'
+              action: keep
+            - target_label: k8s_node_name
+              replacement: "${env:K8S_NODE_NAME}"
+            - target_label: instance
+              replacement: "${env:K8S_NODE_NAME}"
+            metric_relabel_configs:
+            - source_labels: [__name__]
+              regex: 'container_network_(receive|transmit)_bytes_total'
+              action: keep
+            # Un sandbox POD representa la interfaz compartida por los
+            # contenedores de ese pod. Contarlo una sola vez.
+            - source_labels: [container_label_io_kubernetes_container_name]
+              regex: POD
+              action: keep
+            - source_labels: [container_label_io_kubernetes_pod_namespace]
+              regex: pharmago
+              action: keep
+            # Excluir red de host (Node Exporter) y el propio recolector.
+            - source_labels: [container_label_io_kubernetes_pod_name]
+              regex: '(node-exporter|cadvisor-network)-.*'
+              action: drop
+            - source_labels: [container_label_io_kubernetes_pod_namespace]
+              target_label: k8s_namespace_name
+            - source_labels: [container_label_io_kubernetes_pod_name]
+              target_label: k8s_pod_name
+            - action: labeldrop
+              regex: 'container_label_.*'
+      # /stats/summary conserva los nombres de pod/contenedor que cAdvisor
+      # omite en algunos runtimes. Usar el proxy evita omitir validacion TLS.
+      kubeletstats/pod-details:
+        collection_interval: 5s
+        auth_type: serviceAccount
+        endpoint: "https://kubernetes.default.svc:443/api/v1/nodes/${env:K8S_NODE_NAME}/proxy"
+        node: "${env:K8S_NODE_NAME}"
+        metric_groups: [pod, container]
+    processors:
+      transform/network-source:
+        error_mode: propagate
+        metric_statements:
+        - context: resource
+          statements:
+          # El descubrimiento describe el pod recolector. Los atributos de
+          # cada muestra describen el pod observado; evitar etiquetas homonimas.
+          - 'delete_matching_keys(attributes, "^k8s[._]") where attributes["service.name"] == "cadvisor-network"'
+      resource/node:
+        attributes:
+        - key: k8s.node.name
+          value: "${env:K8S_NODE_NAME}"
+          action: upsert
+      filter/pod-details:
+        error_mode: propagate
+        metrics:
+          metric:
+          - 'name != "k8s.pod.network.io" and name != "container.filesystem.usage"'
+      batch:
+        timeout: 1s
+    exporters:
+      otlp:
+        endpoint: otlp-collector:4317
+        # Trafico interno del laboratorio; Kubernetes autentica la lectura de cAdvisor.
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [transform/network-source, batch]
+          exporters: [otlp]
+        metrics/pod-details:
+          receivers: [kubeletstats/pod-details]
+          processors: [filter/pod-details, resource/node, batch]
+          exporters: [otlp]

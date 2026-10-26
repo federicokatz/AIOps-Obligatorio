@@ -1,6 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using AspNetCoreRateLimit;
 using PharmaGo.ApiGateway.Middleware;
 using Instrumentation;
@@ -41,16 +39,7 @@ builder.Services.AddReverseProxy()
 
 builder.Services.AddSingleton<ICustomMetrics, CustomMetrics>();
 
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(metricsBuilder => 
-    {
-        metricsBuilder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("PharmaGo.ApiGateway"))
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddMeter("PharmaGo.CustomMetrics")
-            .AddPrometheusExporter();
-    });
+builder.Services.AddPharmaGoTelemetry("PharmaGo.ApiGateway");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

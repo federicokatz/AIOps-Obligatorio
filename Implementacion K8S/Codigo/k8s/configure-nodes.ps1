@@ -44,7 +44,10 @@ if ($DeploymentProfile -eq 'local') {
     }
 }
 foreach ($assignment in $assignments) {
-    $arguments = @('label', 'node', $assignment.Name, "node-type=$($assignment.Role)", '--overwrite')
+    $assignedNode = $nodes | Where-Object { $_.metadata.name -eq $assignment.Name } | Select-Object -First 1
+    $containerRuntime = 'cri'
+    if ($assignedNode.status.nodeInfo.containerRuntimeVersion -like 'docker://*') { $containerRuntime = 'docker' }
+    $arguments = @('label', 'node', $assignment.Name, "node-type=$($assignment.Role)", "pharmago.io/runtime=$containerRuntime", '--overwrite')
     if ($DryRun) { Write-Output "kubectl $($arguments -join ' ')" }
     else {
         & kubectl @arguments
