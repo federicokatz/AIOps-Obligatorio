@@ -1,0 +1,22 @@
+Contexto: minikube; namespace: pharmago; UTC: 20261026-195520-906
+PASS: GET /api/drug
+PASS: GET /api/roles
+PASS: pharmago-api-gateway registra correlation_id y trace_id de ensayo
+PASS: pharmago-users-service registra correlation_id y trace_id de ensayo
+PASS: pharmago-pharmacy-service registra correlation_id y trace_id de ensayo
+PASS: el Collector recibio el Trace ID (revisar spans/parentesco en collector.log)
+PASS: consulta http_server_duration_ms_count tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta pharmago_http_requests_total tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta pharmago_http_request_duration_milliseconds_count tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta container_cpu_usage_seconds_total tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta container_memory_working_set_bytes tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta pod_network_receive_bytes tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta pod_network_transmit_bytes tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta container_filesystem_usage tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta node_cpu_seconds_total tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta node_memory_MemAvailable_bytes tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta node_filesystem_avail_bytes tiene series (revisar etiquetas nodo/pod en JSON)
+PASS: consulta node_network_receive_bytes_total tiene series (revisar etiquetas nodo/pod en JSON)
+PENDIENTE: integrar reglas Grafana del PR #5
+PENDIENTE: verificar campos JSON en Kibana y paneles de Grafana
+Fallas de comprobacion: 0. Evidencia: ../../../docs/evidencias/telemetry-network-20261026-195520

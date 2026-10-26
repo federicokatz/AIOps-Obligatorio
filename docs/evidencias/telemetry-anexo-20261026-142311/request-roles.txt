@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Mon, 26 Oct 2026 14:23:13 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+X-Correlation-ID: telemetry-20261026-142311-620
+X-Rate-Limit-Limit: 1h
+X-Rate-Limit-Remaining: 999
+X-Rate-Limit-Reset: 2026-10-26T15:23:13.2727103Z

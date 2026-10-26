@@ -1,0 +1,94 @@
+{
+  "merge_base": "f04325a80f3f80ec1fead3b503d20cc1a55e3a5e",
+  "develop": "6799e27db235fea1906212500bcabb0d72113437",
+  "pr5_head": "5b38351b63480e0b1de880a2a807500800bc0a7c",
+  "current_head": "6799e27db235fea1906212500bcabb0d72113437",
+  "conflicts": [],
+  "reviewed_paths": [
+    {
+      "path": "CLAUDE.md",
+      "method": "incoming change"
+    },
+    {
+      "path": "Implementacion K8S/Codigo/k8s/.gitignore",
+      "method": "incoming change"
+    },
+    {
+      "path": "Implementacion K8S/Codigo/k8s/configmaps/gateway-resilience.yaml",
+      "method": "incoming change"
+    },
+    {
+      "path": "Implementacion K8S/Codigo/k8s/configmaps/grafana-alert-rules.yaml",
+      "method": "incoming change"
+    },
+    {
+      "path": "Implementacion K8S/Codigo/k8s/deployments/backend/api-gateway-deployment.yaml",
+      "method": "Git three-way content merge"
+    },
+    {
+      "path": "Implementacion K8S/Codigo/k8s/deployments/ops/grafana-deployment.yaml",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/contexto-aiops.md",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/alerta-429-disparo-20261011.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/capturas/20261011-alerta-servicio-caido-grafana.png",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/capturas/20261011-alerta-servicio-caido.png",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/circuit-breaker-yarp-20261011.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/pods-2-replicas-gateway-20261011.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/rate-limit-2-replicas-20261011-000315.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/rate-limit-baseline-20261011-000124.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/evidencias/rate-limit-dividido-20261011.txt",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/iteracion-02-rate-limiting.md",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/iteracion-03-alertas.md",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/iteracion-04-circuit-breaker.md",
+      "method": "incoming change"
+    },
+    {
+      "path": "docs/iteracion-05-rate-limit-por-replica.md",
+      "method": "incoming change"
+    }
+  ],
+  "current_yaml_semantics_unchanged": true,
+  "combined_gateway_replicas": 2,
+  "safe_rollout_preserved": true,
+  "resilience_mount_preserved": true,
+  "alert_rules_unchanged": 7,
+  "real_index_unchanged": true,
+  "no_commits_created": true,
+  "snapshot": "C:\\Users\\fedek\\AppData\\Local\\Temp\\aiops-pr5-merge-check\\combined-k8s",
+  "recorded_at_utc": "2026-10-26T20:22:42.266325+00:00"
+}

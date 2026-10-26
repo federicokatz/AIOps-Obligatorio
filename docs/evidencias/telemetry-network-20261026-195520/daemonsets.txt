@@ -1,0 +1,5 @@
+NAME               DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                AGE
+cadvisor-network   1         1         1       1            1           pharmago.io/runtime=docker   14m
+fluent-bit         1         1         1       1            1           <none>                       42d
+node-exporter      1         1         1       1            1           <none>                       42d
+otel-node-agent    1         1         1       1            1           <none>                       5h52m

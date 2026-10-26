@@ -1,0 +1,1103 @@
+[
+  {
+    "id": 1,
+    "title": "CPU %",
+    "query": "100 * sum by (instance) (rate(node_cpu_seconds_total{mode!~\"idle|guest|guest_nice\"}[5m])) / sum by (instance) (rate(node_cpu_seconds_total{mode!~\"guest|guest_nice\"}[5m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "instance": "192.168.49.2:9100"
+            },
+            "value": [
+              1793044342.078,
+              "2.4574813390851333"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 2,
+    "title": "Memoria usada %",
+    "query": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.26,
+              "67.19207369605643"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 3,
+    "title": "Disco disponible %",
+    "query": "(node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"}) * 100",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "device": "/dev/sdd",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/usr/lib/modules",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "94.90792017512022"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/data",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/etc/hostname",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/etc/hosts",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/etc/resolv.conf",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/tmp/hostpath-provisioner",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/tmp/hostpath_pv",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          },
+          {
+            "metric": {
+              "device": "/dev/sdg",
+              "fstype": "ext4",
+              "http_scheme": "http",
+              "instance": "192.168.49.2:9100",
+              "job": "node-exporter",
+              "mountpoint": "/var",
+              "net_host_name": "192.168.49.2",
+              "net_host_port": "9100",
+              "node": "minikube",
+              "server_address": "192.168.49.2",
+              "server_port": "9100",
+              "service_instance_id": "192.168.49.2:9100",
+              "service_name": "node-exporter",
+              "url_scheme": "http"
+            },
+            "value": [
+              1793044342.421,
+              "88.21381242212811"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 4,
+    "title": "CPU por pod (cores)",
+    "query": "sum by (node, pod) (rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\",container!=\"POD\"}[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "elasticsearch-5b89ffb8b4-8mv2b"
+            },
+            "value": [
+              1793044342.565,
+              "0.014870759317617608"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "fluent-bit-sccc7"
+            },
+            "value": [
+              1793044342.565,
+              "0.0017369236457104248"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "kibana-5f5d89cc76-6q9b2"
+            },
+            "value": [
+              1793044342.565,
+              "0.01113862431999403"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "node-exporter-lj2mf"
+            },
+            "value": [
+              1793044342.565,
+              "0.005376225770673016"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-api-gateway-67f58567d8-297h4"
+            },
+            "value": [
+              1793044342.565,
+              "0.002104100279924646"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-db-6bbb5b4d4c-wkpsc"
+            },
+            "value": [
+              1793044342.565,
+              "0.011866692487808153"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-pharmacy-service-56fc9b7c74-vpktw"
+            },
+            "value": [
+              1793044342.565,
+              "0.0014131265294624956"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-ui-fb99b96bf-kfsf2"
+            },
+            "value": [
+              1793044342.565,
+              "0.00011427615710991048"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-users-service-7b44d5586b-kpmc2"
+            },
+            "value": [
+              1793044342.565,
+              "0.00154185665745318"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "prometheus-6b779ffb96-cqstj"
+            },
+            "value": [
+              1793044342.565,
+              "0.005303586204468206"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "grafana-77b789b595-kmf2v"
+            },
+            "value": [
+              1793044342.565,
+              "0.0009279942254537764"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "cadvisor-network-sht26"
+            },
+            "value": [
+              1793044342.565,
+              "0.01581952782521437"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "otel-node-agent-ssxrz"
+            },
+            "value": [
+              1793044342.565,
+              "0.011307476981039068"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "otlp-collector-848686fb49-9hcsn"
+            },
+            "value": [
+              1793044342.565,
+              "0.03765106248129435"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "grafana-5555c66476-2wzgp"
+            },
+            "value": [
+              1793044342.565,
+              "0.014349658333333331"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 5,
+    "title": "Memoria por pod (pharmago)",
+    "query": "sum by (node, pod) (container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\",container!=\"POD\"})",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "elasticsearch-5b89ffb8b4-8mv2b"
+            },
+            "value": [
+              1793044342.716,
+              "1083555840"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "fluent-bit-sccc7"
+            },
+            "value": [
+              1793044342.716,
+              "25341952"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "kibana-5f5d89cc76-6q9b2"
+            },
+            "value": [
+              1793044342.716,
+              "580583424"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "node-exporter-lj2mf"
+            },
+            "value": [
+              1793044342.716,
+              "25718784"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-api-gateway-67f58567d8-297h4"
+            },
+            "value": [
+              1793044342.716,
+              "57888768"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-db-6bbb5b4d4c-wkpsc"
+            },
+            "value": [
+              1793044342.716,
+              "953548800"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-pharmacy-service-56fc9b7c74-vpktw"
+            },
+            "value": [
+              1793044342.716,
+              "87359488"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-ui-fb99b96bf-kfsf2"
+            },
+            "value": [
+              1793044342.716,
+              "18538496"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "pharmago-users-service-7b44d5586b-kpmc2"
+            },
+            "value": [
+              1793044342.716,
+              "91836416"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "prometheus-6b779ffb96-cqstj"
+            },
+            "value": [
+              1793044342.716,
+              "181747712"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "grafana-77b789b595-kmf2v"
+            },
+            "value": [
+              1793044342.716,
+              "51404800"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "cadvisor-network-sht26"
+            },
+            "value": [
+              1793044342.716,
+              "27156480"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "otel-node-agent-ssxrz"
+            },
+            "value": [
+              1793044342.716,
+              "86511616"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "otlp-collector-848686fb49-9hcsn"
+            },
+            "value": [
+              1793044342.716,
+              "93188096"
+            ]
+          },
+          {
+            "metric": {
+              "node": "minikube",
+              "pod": "grafana-5555c66476-2wzgp"
+            },
+            "value": [
+              1793044342.716,
+              "53362688"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 6,
+    "title": "Red recibida por nodo",
+    "query": "sum by (node) (rate(node_network_receive_bytes_total{device!=\"lo\"}[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube"
+            },
+            "value": [
+              1793044342.934,
+              "109165.12133706566"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 7,
+    "title": "Red enviada por nodo",
+    "query": "sum by (node) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube"
+            },
+            "value": [
+              1793044343.129,
+              "162651.49544432905"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 8,
+    "title": "Red recibida por pod",
+    "query": "sum by (k8s_node_name, k8s_pod_name) (rate(k8s_pod_network_io{k8s_namespace_name=\"pharmago\",k8s_node_name!=\"\",k8s_pod_name!=\"\",direction=\"receive\"}[1m])) or on (k8s_node_name, k8s_pod_name) sum by (k8s_node_name, k8s_pod_name) (rate(container_network_receive_bytes_total{k8s_namespace_name=\"pharmago\",k8s_node_name!=\"\",k8s_pod_name!=\"\",interface!=\"lo\"}[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "grafana-77b789b595-kmf2v"
+            },
+            "value": [
+              1793044343.348,
+              "61.346093907559165"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-pharmacy-service-56fc9b7c74-vpktw"
+            },
+            "value": [
+              1793044343.348,
+              "533.3956694717929"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "fluent-bit-sccc7"
+            },
+            "value": [
+              1793044343.348,
+              "438.2597216874759"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-ui-fb99b96bf-kfsf2"
+            },
+            "value": [
+              1793044343.348,
+              "196.98219753222227"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "kibana-5f5d89cc76-6q9b2"
+            },
+            "value": [
+              1793044343.348,
+              "1699.1181269823808"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otel-node-agent-ssxrz"
+            },
+            "value": [
+              1793044343.348,
+              "36600.2970133656"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-db-6bbb5b4d4c-wkpsc"
+            },
+            "value": [
+              1793044343.348,
+              "55.14914837834369"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "elasticsearch-5b89ffb8b4-8mv2b"
+            },
+            "value": [
+              1793044343.348,
+              "11276.937462185797"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-users-service-7b44d5586b-kpmc2"
+            },
+            "value": [
+              1793044343.348,
+              "424.16075390059217"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "prometheus-6b779ffb96-cqstj"
+            },
+            "value": [
+              1793044343.348,
+              "39665.144931521914"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-api-gateway-67f58567d8-297h4"
+            },
+            "value": [
+              1793044343.348,
+              "475.36805822928693"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otlp-collector-848686fb49-9hcsn"
+            },
+            "value": [
+              1793044343.348,
+              "24601.690409401755"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 9,
+    "title": "Red enviada por pod",
+    "query": "sum by (k8s_node_name, k8s_pod_name) (rate(k8s_pod_network_io{k8s_namespace_name=\"pharmago\",k8s_node_name!=\"\",k8s_pod_name!=\"\",direction=\"transmit\"}[1m])) or on (k8s_node_name, k8s_pod_name) sum by (k8s_node_name, k8s_pod_name) (rate(container_network_transmit_bytes_total{k8s_namespace_name=\"pharmago\",k8s_node_name!=\"\",k8s_pod_name!=\"\",interface!=\"lo\"}[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "grafana-77b789b595-kmf2v"
+            },
+            "value": [
+              1793044343.517,
+              "25.667821718644003"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-pharmacy-service-56fc9b7c74-vpktw"
+            },
+            "value": [
+              1793044343.517,
+              "7691.619456208862"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "fluent-bit-sccc7"
+            },
+            "value": [
+              1793044343.517,
+              "2129.732504629375"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-ui-fb99b96bf-kfsf2"
+            },
+            "value": [
+              1793044343.517,
+              "3083.548759694186"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "kibana-5f5d89cc76-6q9b2"
+            },
+            "value": [
+              1793044343.517,
+              "11593.89839209431"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otel-node-agent-ssxrz"
+            },
+            "value": [
+              1793044343.517,
+              "18956.309700603193"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-db-6bbb5b4d4c-wkpsc"
+            },
+            "value": [
+              1793044343.517,
+              "24.311093999229964"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "elasticsearch-5b89ffb8b4-8mv2b"
+            },
+            "value": [
+              1793044343.517,
+              "2126.7257026566194"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-users-service-7b44d5586b-kpmc2"
+            },
+            "value": [
+              1793044343.517,
+              "3732.6146343252112"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "prometheus-6b779ffb96-cqstj"
+            },
+            "value": [
+              1793044343.517,
+              "906.1474433016152"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-api-gateway-67f58567d8-297h4"
+            },
+            "value": [
+              1793044343.517,
+              "13812.056542544413"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otlp-collector-848686fb49-9hcsn"
+            },
+            "value": [
+              1793044343.517,
+              "20647.214124635608"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 10,
+    "title": "Filesystem de escritura por contenedor (sin volumenes)",
+    "query": "max by (k8s_node_name, k8s_pod_name, k8s_container_name) (container_filesystem_usage{k8s_namespace_name=\"pharmago\",k8s_node_name!=\"\",k8s_container_name!=\"\"})",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "k8s_container_name": "elasticsearch",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "elasticsearch-5b89ffb8b4-8mv2b"
+            },
+            "value": [
+              1793044343.701,
+              "1346425"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "fluent-bit",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "fluent-bit-sccc7"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "kibana",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "kibana-5f5d89cc76-6q9b2"
+            },
+            "value": [
+              1793044343.701,
+              "36"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "node-exporter",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "node-exporter-lj2mf"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "pharmago-api-gateway",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-api-gateway-67f58567d8-297h4"
+            },
+            "value": [
+              1793044343.701,
+              "1000"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "pharmago-db",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-db-6bbb5b4d4c-wkpsc"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "pharmago-pharmacy-service",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-pharmacy-service-56fc9b7c74-vpktw"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "pharmago-ui",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-ui-fb99b96bf-kfsf2"
+            },
+            "value": [
+              1793044343.701,
+              "189"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "pharmago-users-service",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "pharmago-users-service-7b44d5586b-kpmc2"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "prometheus",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "prometheus-6b779ffb96-cqstj"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "grafana",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "grafana-77b789b595-kmf2v"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "cadvisor",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "cadvisor-network-sht26"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "otel-node-agent",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otel-node-agent-ssxrz"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "otlp-collector",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "otlp-collector-848686fb49-9hcsn"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          },
+          {
+            "metric": {
+              "k8s_container_name": "grafana",
+              "k8s_node_name": "minikube",
+              "k8s_pod_name": "grafana-5555c66476-2wzgp"
+            },
+            "value": [
+              1793044343.701,
+              "0"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 11,
+    "title": "Lecturas de disco por nodo",
+    "query": "sum by (node) (rate(node_disk_read_bytes_total[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube"
+            },
+            "value": [
+              1793044343.877,
+              "0"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": 12,
+    "title": "Escrituras de disco por nodo",
+    "query": "sum by (node) (rate(node_disk_written_bytes_total[1m]))",
+    "response": {
+      "status": "success",
+      "data": {
+        "resultType": "vector",
+        "result": [
+          {
+            "metric": {
+              "node": "minikube"
+            },
+            "value": [
+              1793044344.063,
+              "643804.11785197"
+            ]
+          }
+        ]
+      }
+    }
+  }
+]
