@@ -1,0 +1,42 @@
+
+     -> service.name: Str(PharmaGo.UsersService)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 489977a2b31fe25b
+    ID             : b33f17c34e2eeb5d
+    Name           : api/Roles
+    Kind           : Server
+
+     -> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 9341a3be09cb8f99
+    ID             : 1e073df8c00ce9f8
+    Name           : HTTP GET
+    Kind           : Client
+
+     -> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 6a4f174687d3db85
+    ID             : 489977a2b31fe25b
+    Name           : HTTP GET
+    Kind           : Client
+
+     -> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 0123456789abcdef
+    ID             : 9341a3be09cb8f99
+    Name           : /api/drug
+    Kind           : Server
+
+     -> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 0123456789abcdef
+    ID             : 6a4f174687d3db85
+    Name           : /api/roles
+    Kind           : Server
+
+     -> service.name: Str(PharmaGo.PharmacyService)
+    Trace ID       : 000000006adf62510000000000006d16
+    Parent ID      : 1e073df8c00ce9f8
+    ID             : 0abb873b13c7d6de
+    Name           : api/Drug
+    Kind           : Server

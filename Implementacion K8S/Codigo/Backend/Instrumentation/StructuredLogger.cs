@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -121,6 +122,12 @@ namespace Instrumentation
                 ["service"] = _hostEnvironment.ApplicationName,
                 ["correlation_id"] = correlationId
             };
+
+            if (Activity.Current is { IdFormat: ActivityIdFormat.W3C } activity)
+            {
+                scopeData["trace_id"] = activity.TraceId.ToHexString();
+                scopeData["span_id"] = activity.SpanId.ToHexString();
+            }
 
             if (metadata != null)
             {

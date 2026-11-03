@@ -1,0 +1,53 @@
+-> service.name: Str(PharmaGo.PharmacyService)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : 18ea4319d1c9f071
+    ID             : 58508c66df8985a4
+    Name           : api/Drug
+    Kind           : Server
+    Start time     : 2026-10-26 19:55:23.5480707 +0000 UTC
+    End time       : 2026-10-26 19:55:23.5501411 +0000 UTC
+
+-> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : eece541747bba556
+    ID             : 18ea4319d1c9f071
+    Name           : HTTP GET
+    Kind           : Client
+    Start time     : 2026-10-26 19:55:23.5457359 +0000 UTC
+    End time       : 2026-10-26 19:55:23.5502047 +0000 UTC
+
+-> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : 256e5d70ca938402
+    ID             : 6e0625af9eb88e4b
+    Name           : HTTP GET
+    Kind           : Client
+    Start time     : 2026-10-26 19:55:24.0148354 +0000 UTC
+    End time       : 2026-10-26 19:55:24.0180921 +0000 UTC
+
+-> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : 0123456789abcdef
+    ID             : eece541747bba556
+    Name           : /api/drug
+    Kind           : Server
+    Start time     : 2026-10-26 19:55:23.5447301 +0000 UTC
+    End time       : 2026-10-26 19:55:23.5505369 +0000 UTC
+
+-> service.name: Str(PharmaGo.ApiGateway)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : 0123456789abcdef
+    ID             : 256e5d70ca938402
+    Name           : /api/roles
+    Kind           : Server
+    Start time     : 2026-10-26 19:55:24.0143858 +0000 UTC
+    End time       : 2026-10-26 19:55:24.0183561 +0000 UTC
+
+-> service.name: Str(PharmaGo.UsersService)
+    Trace ID       : 000000006adfb02a0000000000001196
+    Parent ID      : 6e0625af9eb88e4b
+    ID             : 5a8bd89152de1255
+    Name           : api/Roles
+    Kind           : Server
+    Start time     : 2026-10-26 19:55:24.0157375 +0000 UTC
+    End time       : 2026-10-26 19:55:24.0180735 +0000 UTC

@@ -5,6 +5,9 @@ metadata:
   namespace: pharmago
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: pharmago-api-gateway
   # Mantener las replicas disponibles mientras arranca la nueva version.
   strategy:
     type: RollingUpdate
@@ -12,9 +15,6 @@ spec:
       maxUnavailable: 0
       maxSurge: 1
   minReadySeconds: 10
-  selector:
-    matchLabels:
-      app: pharmago-api-gateway
   template:
     metadata:
       labels:

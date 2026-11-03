@@ -1,0 +1,15 @@
+NAME                                         READY   STATUS    RESTARTS        AGE     IP             NODE       NOMINATED NODE   READINESS GATES
+cadvisor-network-sht26                       1/1     Running   0               14m     10.244.0.92    minikube   <none>           <none>
+elasticsearch-5b89ffb8b4-8mv2b               1/1     Running   3 (7d21h ago)   42d     10.244.0.64    minikube   <none>           <none>
+fluent-bit-sccc7                             1/1     Running   2 (7d21h ago)   16d     10.244.0.67    minikube   <none>           <none>
+grafana-5555c66476-2wzgp                     1/1     Running   0               3m9s    10.244.0.97    minikube   <none>           <none>
+kibana-5f5d89cc76-6q9b2                      1/1     Running   3 (7d21h ago)   42d     10.244.0.65    minikube   <none>           <none>
+node-exporter-lj2mf                          1/1     Running   3 (7d21h ago)   42d     192.168.49.2   minikube   <none>           <none>
+otel-node-agent-ssxrz                        1/1     Running   0               5m21s   10.244.0.95    minikube   <none>           <none>
+otlp-collector-848686fb49-9hcsn              1/1     Running   0               5m19s   10.244.0.96    minikube   <none>           <none>
+pharmago-api-gateway-67f58567d8-297h4        1/1     Running   0               5h52m   10.244.0.75    minikube   <none>           <none>
+pharmago-db-6bbb5b4d4c-wkpsc                 1/1     Running   3 (7d21h ago)   42d     10.244.0.70    minikube   <none>           <none>
+pharmago-pharmacy-service-56fc9b7c74-vpktw   1/1     Running   0               5h52m   10.244.0.76    minikube   <none>           <none>
+pharmago-ui-fb99b96bf-kfsf2                  1/1     Running   0               5h52m   10.244.0.78    minikube   <none>           <none>
+pharmago-users-service-7b44d5586b-kpmc2      1/1     Running   0               5h52m   10.244.0.77    minikube   <none>           <none>
+prometheus-6b779ffb96-cqstj                  1/1     Running   0               5h34m   10.244.0.83    minikube   <none>           <none>

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cadvisor-network
+  namespace: pharmago
+spec:
+  selector:
+    matchLabels:
+      app: cadvisor-network
+  template:
+    metadata:
+      labels:
+        app: cadvisor-network
+    spec:
+      # Complemento para Docker/Minikube; no requiere socket Docker en containerd.
+      nodeSelector:
+        pharmago.io/runtime: docker
+      automountServiceAccountToken: false
+      tolerations:
+      - operator: Exists
+      containers:
+      - name: cadvisor
+        image: ghcr.io/google/cadvisor:v0.60.6
+        args:
+        - --port=18080
+        - --housekeeping_interval=5s
+        - --max_housekeeping_interval=10s
+        - --enable_metrics=network
+        - --docker_only=true
+        - --store_container_labels=false
+        - --whitelisted_container_labels=io.kubernetes.container.name,io.kubernetes.pod.name,io.kubernetes.pod.namespace
+        securityContext:
+          runAsUser: 0
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: [ALL]
+        ports:
+        - name: metrics
+          containerPort: 18080
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: metrics
+          periodSeconds: 5
+          timeoutSeconds: 2
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits: {cpu: 500m, memory: 256Mi}
+        volumeMounts:
+        - {name: rootfs, mountPath: /rootfs, readOnly: true}
+        - {name: docker-socket, mountPath: /var/run/docker.sock, readOnly: true}
+        - {name: sys, mountPath: /sys, readOnly: true}
+      volumes:
+      - name: rootfs
+        hostPath: {path: /, type: Directory}
+      - name: docker-socket
+        hostPath: {path: /var/run/docker.sock, type: Socket}
+      - name: sys
+        hostPath: {path: /sys, type: Directory}

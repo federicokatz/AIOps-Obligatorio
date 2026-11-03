@@ -30,7 +30,7 @@ namespace PharmaGo.UsersService.Factory
                 var serviceUrl = configuration["ServiceUrls:PharmacyService"] ?? "http://127.0.0.1:5002";
                 client.BaseAddress = new Uri(serviceUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
-            });
+            }).AddHttpMessageHandler<CorrelationIdDelegatingHandler>();
         }
 
         public static void RegisterDataAccessServices(this IServiceCollection serviceCollection, IConfiguration configuration)

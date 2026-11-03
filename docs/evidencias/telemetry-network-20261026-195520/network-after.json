@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "k8s_pod_name": "pharmago-api-gateway-67f58567d8-297h4"
+        },
+        "value": [
+          1793044530.747,
+          "8063606"
+        ]
+      }
+    ]
+  }
+}

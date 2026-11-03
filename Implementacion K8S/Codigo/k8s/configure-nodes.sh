@@ -51,12 +51,19 @@ case "$DEPLOYMENT_PROFILE" in
         ;;
     *) fail "Perfil desconocido: $DEPLOYMENT_PROFILE" ;;
 esac
+# Clasificar el runtime antes de modificar nodos. El recolector de red Docker
+# solo se ejecuta donde existe ese runtime; otros nodos usan el Kubelet.
+RUNTIMES=()
+for name in "${NAMES[@]}"; do
+    runtime=$(kubectl get node "$name" -o 'jsonpath={.status.nodeInfo.containerRuntimeVersion}')
+    case "$runtime" in docker://*) RUNTIMES+=(docker) ;; *) RUNTIMES+=(cri) ;; esac
+done
 run() {
     if "$DRY_RUN"; then printf '%q ' kubectl "$@"; printf '\n';
     else kubectl "$@"; fi
 }
 for index in "${!NAMES[@]}"; do
-    run label node "${NAMES[$index]}" "node-type=${ROLES[$index]}" --overwrite
+    run label node "${NAMES[$index]}" "node-type=${ROLES[$index]}" "pharmago.io/runtime=${RUNTIMES[$index]}" --overwrite
     if [ "${ROLES[$index]}" = backend ]; then
         run taint node "${NAMES[$index]}" pharmago.io/dedicated=backend:NoSchedule --overwrite
     fi

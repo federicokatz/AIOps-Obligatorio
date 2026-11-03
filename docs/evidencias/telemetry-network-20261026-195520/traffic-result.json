@@ -1,0 +1,7 @@
+{
+  "requests": 20,
+  "before_received_bytes": 7931052.0,
+  "after_received_bytes": 8063606.0,
+  "increase_bytes": 132554.0,
+  "note": "During controlled GET requests and normal ongoing platform traffic; not exclusive byte accounting."
+}

@@ -11,14 +11,35 @@ data:
           grpc:
             endpoint: "0.0.0.0:4317"
 
+    processors:
+      # Mantener los nombres usados por los dashboards y las alertas del PR #5.
+      transform/compat:
+        error_mode: propagate
+        metric_statements:
+        - context: metric
+          statements:
+          - set(name, "http_server_duration_ms") where name == "http.server.duration"
+          - set(name, "http_client_duration_ms") where name == "http.client.duration"
+      batch:
+        timeout: 1s
+
     exporters:
       prometheus:
         endpoint: "0.0.0.0:8889"
-      debug: {}
+        add_metric_suffixes: false
+        resource_to_telemetry_conversion:
+          enabled: true
+      debug/traces:
+        verbosity: detailed
 
     service:
       pipelines:
         metrics:
           receivers: [otlp]
-          exporters: [prometheus, debug]
+          processors: [transform/compat, batch]
+          exporters: [prometheus]
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [debug/traces]
 
