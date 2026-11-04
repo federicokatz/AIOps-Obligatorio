@@ -63,4 +63,6 @@ En los nueve intentos se observó `NotReady`, aumentó `restartCount` de 0 a 1, 
 | 26-09-2026 | Primer intento de inyección con `kubectl exec ... kill -KILL 1`. | No cambió el container ID ni aumentó `restartCount`; se canceló la medición. | Usar `crictl stop` desde el nodo y registrar el resultado. |
 | 26-09-2026 | Nueve fallas aisladas desde CRI. | [CSV](evidencias/self-healing-20260926-230325.csv); 9/9 recuperadas, máximo 10,05 s. | Planificar y probar rate limiting y fallas repetidas, sin extrapolar estos resultados a disponibilidad continua. |
 
+| 03-11-2026 | Apoyo de ChatGPT/Codex para redactar respuestas sencillas del punto 9. Se priorizó la evidencia de las secciones 1–8 y se quitaron cálculos repetidos. | [Notebook](../Implementacion%20K8S/Codigo/anomaly-detection/comparacion_detectores_obligatorio.ipynb): quedaron tres ayudas ejecutadas sin errores, para rankings, primer minuto de detección y ejemplos del exit ticket. Las primeras 24 celdas y sus salidas se conservaron intactas. | Revisión del equipo y cita del uso de IA en el informe. Los resultados sobre los mismos datos de entrenamiento no demuestran rendimiento futuro. |
+
 Agregar una fila por iteración y enlazar desde aquí cada CSV o informe de evidencia generado. No reemplazar resultados fallidos por una conclusión sin registro.
