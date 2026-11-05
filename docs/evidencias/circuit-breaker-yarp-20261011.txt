@@ -1,0 +1,18 @@
+# Circuit breaker del gateway con health checks de YARP (11-10-2026, Minikube de un nodo)
+Escenario: Pharmacy escalado a 0 replicas; solicitudes GET /api/drug al gateway desde un pod del cluster, via Service.
+
+A) Sin circuit breaker (linea base): 39 solicitudes, todas 502, tiempo medio 0.877 s cada una.
+
+B) Health check PASIVO (TransportFailureRate + HealthyAndUnknown, ReactivationPeriod 15s):
+   - 40 solicitudes: 10 x 502 (tiempo medio 0.450 s), luego 30 x 503 (tiempo medio 0.009 s). Primer 503 en la solicitud #11.
+   - Recuperacion con Pharmacy otra vez listo: primer 200 a los ~55 s. El periodo efectivo es el mayor entre ReactivationPeriod y
+     DetectionWindowSize (60 s por defecto, solo configurable desde codigo, verificado en el codigo fuente de YARP).
+   - Descartado: recuperacion demasiado lenta para el objetivo de MTTR.
+
+C) Health check ACTIVO (ConsecutiveFailures umbral 2, intervalo 3 s, timeout 2 s, ruta /health, HealthyAndUnknown):
+   linea de tiempo (1 solicitud/s):
+     t=1s  -> 502   (destino aun no marcado como no sano)
+     t=11s -> 503   (circuito abierto)
+     Pharmacy reescalado a 1 a t~28s
+     t=43s -> 200   (servicio recuperado; el pod tarda ~14 s en arrancar)
+   Elegido: deteccion ~10 s, cierre inmediato al volver el servicio.

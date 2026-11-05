@@ -1,0 +1,32 @@
+# Baseline rate limiting, 1 replica gateway
+date_utc=2026-10-11T00:01:24Z
+replicas=1
+pod/pharmago-api-gateway-5558cc84f8-gtl4t
+Test Rate Limiting - Enviando 120 peticiones...
+
+[101/120] ⚠ 429 Rate Limited
+[102/120] ⚠ 429 Rate Limited
+[103/120] ⚠ 429 Rate Limited
+[104/120] ⚠ 429 Rate Limited
+[105/120] ⚠ 429 Rate Limited
+[106/120] ⚠ 429 Rate Limited
+[107/120] ⚠ 429 Rate Limited
+[108/120] ⚠ 429 Rate Limited
+[109/120] ⚠ 429 Rate Limited
+[110/120] ⚠ 429 Rate Limited
+[111/120] ⚠ 429 Rate Limited
+[112/120] ⚠ 429 Rate Limited
+[113/120] ⚠ 429 Rate Limited
+[114/120] ⚠ 429 Rate Limited
+[115/120] ⚠ 429 Rate Limited
+[116/120] ⚠ 429 Rate Limited
+[117/120] ⚠ 429 Rate Limited
+[118/120] ⚠ 429 Rate Limited
+[119/120] ⚠ 429 Rate Limited
+[120/120] ⚠ 429 Rate Limited
+
+Resultados:
+  Exitosas: 100
+  Rate Limited (429): 20
+
+✓ Rate limiting funciona
