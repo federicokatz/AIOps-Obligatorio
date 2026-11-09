@@ -39,8 +39,12 @@ case "$MODE" in
     kubectl scale deploy "$DEPLOY" -n "$NS" --replicas=0
     sleep "$SECS"
     restore
-    kubectl rollout status deploy/"$DEPLOY" -n "$NS" --timeout=180s
-    echo "Recuperado (READY): $(now)"
+    if kubectl rollout status deploy/"$DEPLOY" -n "$NS" --timeout=180s; then
+      echo "Recuperado (READY): $(now)"
+    else
+      echo "NO recuperado en 180 s: $(now). Revisar: kubectl describe pod -n $NS -l app=$DEPLOY"
+      exit 1
+    fi
     ;;
   *)
     echo "Modo invalido: $MODE (usar scale o pod)"

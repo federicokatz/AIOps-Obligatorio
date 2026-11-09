@@ -34,7 +34,13 @@ function Get-Now { (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 
 function Clear-PodFiles {
   $pod = kubectl get pod -n $ns -l app=$Target -o jsonpath='{.items[0].metadata.name}' 2>$null
-  if ($pod) { kubectl exec -n $ns $pod -- rm -f /dev/shm/fill /tmp/fill /tmp/chaos_fill 2>$null }
+  if ($pod) {
+    kubectl exec -n $ns $pod -- rm -f /dev/shm/fill /tmp/fill /tmp/chaos_fill 2>$null
+    # cpu-spike.sh deja sus 4 bucles corriendo al terminar: se matan aqui.
+    # (el patron do[n]e evita que el propio comando se mate a si mismo)
+    $kill = 'for p in /proc/[0-9]*; do tr "\0" " " < $p/cmdline 2>/dev/null | grep -q "while :;do :;do[n]e" && kill -9 ${p#/proc/} 2>/dev/null; done; true'
+    kubectl exec -n $ns $pod -- sh -c $kill 2>$null
+  }
 }
 
 function Invoke-Phase([string]$Name, [scriptblock]$Action) {

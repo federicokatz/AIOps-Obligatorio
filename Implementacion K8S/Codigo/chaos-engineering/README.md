@@ -24,16 +24,26 @@ Default deploy de los scripts base: `pharmago-api-gateway`. Los scripts nuevos y
 
 ## Estado de validación
 
-Estos scripts **se escribieron sin un clúster disponible y no se ejecutaron**. Falta probarlos; hasta entonces no hay evidencia de su efecto.
+Probado el 06-11-2026 en Minikube de **un nodo** (perfil `local`, driver Docker, CNI **Calico**), contra el microservicio `pharmago-pharmacy-service`. Las alertas de Grafana no estaban cargadas en esta rama, así que el efecto se verificó con consultas a Prometheus.
 
-Puntos a verificar al probarlos:
+| Script | Resultado | Evidencia |
+| --- | --- | --- |
+| `network-cut` | **Funciona con Calico.** `wget` al `/health` del servicio: `Healthy` antes, `timed out` durante el corte, `Healthy` al restaurar. La política se crea y se borra sola. Con el CNI por defecto de Minikube no se probó (puede no tener efecto). | Salida de la prueba (T0 00:01:04Z, fin 00:01:30Z) |
+| `disconnect-component` modo `scale` | **Funciona.** 0 réplicas durante 15 s; `READY` de nuevo ~31 s después de bajar (incluye arranque del pod). | T0 00:01:39Z, READY 00:02:10Z |
+| `disconnect-component` modo `pod` | **Funciona.** El pod se recrea y vuelve a `READY`. | Probado 00:02:10Z |
+| `cpu-spike` | **Funciona, con un defecto.** CPU del pod: 0,02 → 0,46 cores (~93 % del límite de 0,5). **El script deja sus 4 bucles corriendo al terminar** (sigue en ~0,50 cores minutos después); `chaos-all` los mata en su limpieza. | Consultas a Prometheus |
+| `ram-spike` | **Funciona solo parcialmente.** `/dev/shm` mide 64 MB; con más de 64 MB el `dd` falla y escribe el resto en `/tmp` (disco, no memoria). El working set subió de 32 a 183 MB con 200 MB pedidos, en gran parte por caché de página. Para presionar de verdad el límite de 384Mi hace falta otra técnica. | Consultas a Prometheus |
+| `volume-spike` | **Escribe el archivo, pero no dispara la alerta de disco.** El nodo tiene ~92,6 % de disco libre (933 GB de 1007 GB): 300 MB no mueven el umbral de 15 %. | `df` y consulta a Prometheus |
+| `load-requests` | **Se ejecuta sin error** (500 POST a `/api/login`, 36 s). **No se midió** la proporción de respuestas 200 y 429. | `docs/evidencias/chaos-run-20261109-121901.csv` |
+| `chaos-all` | **Las seis fases corrieron en secuencia** el 09-11-2026 y dejaron el CSV con T0 y T_fin. La fase `desconexion` de esa corrida no es válida (falla de Calico, ver notas). Repetida con el clúster sano: `READY` 16 s después de restaurar, 3 de 3 veces. | [CSV](../../../docs/evidencias/chaos-run-20261109-121901.csv) y [notas](../../../docs/evidencias/chaos-run-20261109-notas.md) |
 
-- **`network-cut` depende del CNI.** Una `NetworkPolicy` solo se aplica si el CNI la soporta. Con el CNI por defecto de Minikube puede no tener efecto. Probar con `minikube start --cni=calico` y comprobar el corte, por ejemplo:
-  `kubectl exec -n pharmago <pod-gateway> -- wget -qO- --timeout=2 http://pharmago-pharmacy-service/health`.
-- **Storage:** `volume-spike` llena `/tmp` del pod, pero la alerta "Disco disponible bajo" mide el disco del nodo (< 15 %); con 300 MB puede no dispararse. Ajustar el tamaño o la alerta.
-- **Memoria:** confirmar que la escritura en `/dev/shm` cuenta contra el límite de memoria del contenedor (384Mi).
-- **Desconexión de la base (`pharmago-db`)**: probar el modo `pod`; el modo `scale` también aplica, pero el volumen persistente puede demorar el arranque.
+Puntos abiertos:
+
+- **Storage:** para disparar "Disco disponible bajo" habría que alertar sobre uso por contenedor (`container_fs_usage_bytes`, que existe en Prometheus pero no devolvió series con el filtro `namespace="pharmago"`) o fijar un límite de `ephemeral-storage` por pod.
+- **Memoria:** una presión real sobre el límite requiere ocupar RAM con un proceso que la reserve (no `dd` a `/dev/shm`).
+- **Desconexión de la base (`pharmago-db`)**: no probada.
 - **`chaos-all.ps1`** necesita `sh` (Git Bash o WSL) para los scripts base, que solo existen en `.sh`.
+- Un solo nodo: no demuestra separación entre nodos físicos.
 
 ## Ver el impacto
 

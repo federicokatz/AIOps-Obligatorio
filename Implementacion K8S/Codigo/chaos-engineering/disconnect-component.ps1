@@ -38,4 +38,8 @@ finally {
   Write-Host "Restaurado: $Deployment a $orig replica(s) T_fin=$(Get-Now)"
 }
 kubectl rollout status deploy/$Deployment -n $ns --timeout=180s
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "NO recuperado en 180 s: $(Get-Now). Revisar: kubectl describe pod -n $ns -l app=$Deployment"
+  exit 1
+}
 Write-Host "Recuperado (READY): $(Get-Now)"

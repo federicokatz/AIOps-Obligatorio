@@ -44,7 +44,11 @@ run_phase() {
 
 cleanup_pod_files() {
   POD=$(kubectl get pod -n "$NS" -l app="$TARGET" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
-  [ -n "$POD" ] && kubectl exec -n "$NS" "$POD" -- rm -f /dev/shm/fill /tmp/fill /tmp/chaos_fill 2>/dev/null
+  [ -z "$POD" ] && return 0
+  kubectl exec -n "$NS" "$POD" -- rm -f /dev/shm/fill /tmp/fill /tmp/chaos_fill 2>/dev/null
+  # cpu-spike.sh deja sus 4 bucles corriendo al terminar: se matan aqui.
+  # (el patron do[n]e evita que el propio comando se mate a si mismo)
+  kubectl exec -n "$NS" "$POD" -- sh -c 'for p in /proc/[0-9]*; do tr "\0" " " < $p/cmdline 2>/dev/null | grep -q "while :;do :;do[n]e" && kill -9 ${p#/proc/} 2>/dev/null; done; true' 2>/dev/null
 }
 trap 'echo "Interrumpido; limpiando"; cleanup_pod_files; "$DIR/network-cut.sh" "$TARGET" restore' INT TERM
 
