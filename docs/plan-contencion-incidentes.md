@@ -1,6 +1,6 @@
 # Plan de contención de incidentes operacionales
 
-Estado: **borrador completo, pendiente de revisión del equipo.** Los playbooks de CPU, memoria, storage y red están por validar con los scripts de caos (ver estado en cada uno).
+Estado: **borrador completo, pendiente de revisión del equipo.** Los playbooks de CPU, memoria, storage, red y desconexión se contrastaron con los scripts de caos el 09-11-2026 en Minikube de un solo nodo (evidencia en `docs/evidencias/chaos-run-20261109-notas.md`, rama `feature/chaos-scripts`). Falta validar el flood con `load-requests.sh` y la caída de la base de datos.
 
 Este plan cubre el ítem "Plan de contención de incidentes operacionales" de la rúbrica. Está pensado para usarse en vivo durante el war-room de la defensa: dice qué mirar, quién decide y qué ejecutar. Se apoya en lo ya implementado (probes, self healing, circuit breaker, rate limiting, alertas de Grafana).
 
@@ -85,7 +85,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.2 Sobrecarga de CPU
 
-**Estado:** A validar. La alerta se validó contra Prometheus en reposo, pero no se disparó con carga real.
+**Estado:** Probado. Con `cpu-spike.sh` la CPU del pod pasó de 0,02 a 0,46 cores (~93 % del límite de 0,5), medido en Prometheus. Defecto del script: deja sus 4 bucles corriendo al terminar; hay que matarlos o reemplazar el pod (`chaos-all` ya los limpia). No se confirmó el disparo de la alerta en Grafana en esta tanda (las alertas viven en `feature/rate-limiting`).
 
 | Campo | Contenido |
 | --- | --- |
@@ -101,7 +101,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.3 Sobrecarga de memoria
 
-**Estado:** A validar. No se confirmó que la escritura en `/dev/shm` del script cuente contra el límite de memoria del contenedor.
+**Estado:** Parcial. `/dev/shm` mide solo 64 MB: con 200 MB pedidos el `dd` falla y el resto cae a `/tmp` (disco). El working set subió de 32 a 183 MB, en gran parte por caché de página; no se llegó al límite de 384Mi ni a un OOM. Para presionar el límite de verdad hace falta otra técnica (un proceso que reserve RAM).
 
 | Campo | Contenido |
 | --- | --- |
@@ -117,7 +117,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.4 Sobrecarga de storage
 
-**Estado:** A validar. Posible desalineación: el script llena `/tmp` dentro del pod, pero la alerta mide el disco disponible **del nodo** (< 15 %). Una escritura de 300 MB puede no disparar la alerta.
+**Estado:** Parcial, desalineación confirmada. El script escribe el archivo, pero la alerta mide el disco **del nodo** (< 15 %) y el nodo de prueba tenía ~92,6 % libre (933 GB de 1007 GB): 300 MB no la disparan. Falta alertar sobre uso por contenedor o fijar un límite de `ephemeral-storage`.
 
 | Campo | Contenido |
 | --- | --- |
@@ -133,11 +133,11 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.5 Interrupción de tráfico de red
 
-**Estado:** A validar. No existe script de caos ni alerta específica para esta falla. Lo siguiente es el diseño previsto.
+**Estado:** Parcial. Existe el script `network-cut` (rama `feature/chaos-scripts`) y se probó con **Calico**: `wget` al `/health` pasó de `Healthy` a `timed out` durante el corte y volvió al restaurar. Con el CNI por defecto de Minikube no se probó (puede no tener efecto). No existe alerta específica; no se midió la reacción del circuit breaker ante el corte.
 
 | Campo | Contenido |
 | --- | --- |
-| **Falla / inyección** | Previsto: aplicar una `NetworkPolicy` de denegación (ingress y/o egress) sobre un servicio, y retirarla al terminar. ⚠ Requiere que el CNI del clúster haga cumplir las políticas; en Minikube con CNI por defecto puede no hacerlo. Verificar antes de la defensa; alternativa: `kubectl exec ... iptables` o escalar a 0 el Service destino. |
+| **Falla / inyección** | `chaos-engineering/network-cut.sh [deployment] [segundos]` aplica una `NetworkPolicy` de denegación total (ingress y egress) sobre el servicio y la retira al terminar (`restore` la retira a mano). ⚠ Requiere que el CNI del clúster haga cumplir las políticas; en Minikube con CNI por defecto puede no hacerlo. Verificar antes de la defensa; alternativa: `kubectl exec ... iptables` o escalar a 0 el Service destino. |
 | **Síntoma** | Timeouts o 502/503 en el gateway hacia el servicio aislado; el pod sigue `Running` y su `/health` local responde. |
 | **Detección** | **Sin alerta directa.** Señales indirectas: "Tasa de errores 5xx alta"; "Servicio caído" si el scrape de Prometheus también queda bloqueado; caída de las métricas de red del pod (panel de red del dashboard Infra). |
 | **Qué hace el sistema solo** | El circuit breaker del gateway (sondeo activo de `/health` cada 3 s, 2 fallos) corta con 503 tras ~10 s en vez de acumular conexiones. Las probes de Kubernetes no distinguen la partición si el chequeo se hace dentro del pod. |
@@ -145,11 +145,11 @@ Cada playbook tiene los mismos campos. Convenciones:
 | **Contención** | Retirar la política (`kubectl delete networkpolicy <nombre> -n pharmago`) o corregir la causa. Mientras tanto el circuit breaker protege al gateway. |
 | **Recuperación** | El gateway vuelve a sondear con éxito `/health`; las solicitudes dejan de devolver 503; 5xx bajo 5 %. Se midió que tras volver un servicio caído, la recuperación del gateway fue inmediata (200 a los 43 s en total, incluyendo el arranque del pod). |
 | **Humano vs. automático** | Automático: 503 rápido por circuit breaker. Humano: detectar la causa de red y restaurarla. |
-| **Brecha a cubrir** | Escribir el script de corte de red y agregar una alerta (por ejemplo, error de conexión upstream o caída brusca del tráfico de red por pod). Candidato a trabajo de la sección de scripts de caos. |
+| **Brecha a cubrir** | Agregar una alerta (por ejemplo, error de conexión upstream o caída brusca del tráfico de red por pod) y medir la reacción del circuit breaker con el corte aplicado. El script ya existe. |
 
 ### 5.6 Desconexión o caída de un componente interno
 
-**Estado:** Probado en parte. Probado: 9/9 recuperaciones de proceso (5,22 a 10,05 s), circuit breaker con Pharmacy a 0 réplicas (502 durante ~10 s y luego 503; recuperación inmediata al volver), y alerta "Servicio caído" en `Firing` (captura "Firing for 40s"). ⚠ Circuit breaker y alerta dependen de `feature/rate-limiting`. No probado: caída de SQL Server o de Users.
+**Estado:** Probado en parte. Probado: 9/9 recuperaciones de proceso (5,22 a 10,05 s), circuit breaker con Pharmacy a 0 réplicas (502 durante ~10 s y luego 503; recuperación inmediata al volver), y alerta "Servicio caído" en `Firing` (captura "Firing for 40s"). Además, con `disconnect-component.sh` (escala a 0 por 30 s y restaura) el servicio volvió a `READY` **16 s** después de restaurar, 3 de 3 veces, con una réplica y un solo nodo (la primera corrida dio 3 min 32 s por un token vencido de Calico, falla del entorno y no del self healing; se conserva en las notas). ⚠ Circuit breaker y alerta dependen de `feature/rate-limiting`. No probado: caída de SQL Server o de Users.
 
 | Campo | Contenido |
 | --- | --- |
