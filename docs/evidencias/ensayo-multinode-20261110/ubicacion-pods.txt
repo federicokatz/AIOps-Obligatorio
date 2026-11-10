@@ -1,0 +1,27 @@
+# Ubicacion real de pods en el ensayo multinode (10-11-2026)
+# Minikube perfil 'multi' (5 nodos, contenedores Docker en un solo host), stack REDUCIDO. 2026-11-10T21:43:04Z
+
+NAME        STATUS   ROLES           AGE    VERSION   NODE-TYPE
+multi       Ready    control-plane   176m   v1.37.0   frontend
+multi-m02   Ready    <none>          176m   v1.37.0   backend
+multi-m03   Ready    <none>          175m   v1.37.0   backend
+multi-m04   Ready    <none>          175m   v1.37.0   backend
+multi-m05   Ready    <none>          174m   v1.37.0   ops
+
+NAME                                        READY   STATUS    RESTARTS       AGE     IP            NODE        NOMINATED NODE   READINESS GATES
+pharmago-api-gateway-7d98555f65-84hpw       1/1     Running   0              15m     10.244.2.5    multi-m03   <none>           <none>
+pharmago-api-gateway-7d98555f65-kdzx9       1/1     Running   0              15m     10.244.2.6    multi-m03   <none>           <none>
+pharmago-db-c94db875b-zgc59                 1/1     Running   0              37m     10.244.4.2    multi-m05   <none>           <none>
+pharmago-pharmacy-service-d565b55d5-mrfl6   1/1     Running   1 (103s ago)   6m51s   10.244.3.18   multi-m04   <none>           <none>
+pharmago-pharmacy-service-d565b55d5-r8b6t   1/1     Running   0              24s     10.244.3.20   multi-m04   <none>           <none>
+pharmago-users-service-6c96898b48-bp9kz     1/1     Running   0              35m     10.244.1.7    multi-m02   <none>           <none>
+pharmago-users-service-6c96898b48-rr9sq     1/1     Running   3 (35m ago)    37m     10.244.1.6    multi-m02   <none>           <none>
+
+## nodos por servicio
+      2 pharmago-api-gateway multi-m03
+      1 pharmago-db multi-m05
+      2 pharmago-pharmacy-service multi-m04
+      2 pharmago-users-service multi-m02
+
+## pods Pending o sin nodo
+0
