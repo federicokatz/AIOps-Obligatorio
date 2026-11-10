@@ -33,13 +33,29 @@ Comando: `TARGET=pharmago-pharmacy-service PAUSE=110 REQUESTS=500 CPU_SECS=100 R
 
 ## 3. Experimentos controlados (tráfico por debajo del límite)
 
-Tráfico de fondo de ~0,6 req/s a `/api/drug` por el gateway ([registro](chaos-20261110/trafico-controlado-red-y-desconexion.txt)), tras reiniciar el gateway para reponer sus contadores.
+Tráfico de fondo a `/api/drug` por el gateway ([registro](chaos-20261110/trafico-controlado-red-y-desconexion.txt)), tras reiniciar el gateway para reponer sus contadores. **Corrección posterior (10-11, tarde):** estos experimentos no tuvieron una sola fuente de tráfico. Mis loops de la corrida completa (2 req/s) nunca se detuvieron (`pkill` no mata procesos en Git Bash de Windows; hubo que usar `kill <PID>`), así que corrían a la vez con los loops de estos experimentos (~3,4 req/s en total). Por eso la mayoría de las respuestas fueron `429`. Lo que se afirma abajo sobre el corte de red se apoya en respuestas `200` y en `up=1`, que no dependen de ese ruido; la medición de continuidad se rehízo limpia en la sección 3b.
 
 **Muerte del contenedor** (`docker kill` desde el nodo, T0 19:52:52): `restartCount` pasó de 0 a 1 (`lastState` con código 137); la alerta "Pod reiniciado" pasó a `firing` a los **+21 s**; "Servicio caído" tuvo un `pending` de ~10 s y no llegó a `firing`. El pod volvió a `READY` de inmediato.
 
 **Corte de red** (`network-cut.sh pharmago-pharmacy-service 40`, 19:55:58 a 19:56:38): **no cortó el tráfico existente.** Durante el corte el cliente recibió `200` en `/api/drug` (19:56:14 a 19:56:30), Prometheus siguió viendo a Pharmacy con `up=1` en las 13 muestras del corte y no disparó ninguna alerta. Explicación probable: la `NetworkPolicy` de Calico solo bloquea conexiones **nuevas**; las conexiones HTTP con keep-alive ya establecidas (gateway → Pharmacy y Prometheus → Pharmacy) siguen pasando. Es una hipótesis: no se verificó con un contador de conexiones. El script cumple con aplicar y retirar la política (y con conexiones nuevas se había observado un `wget` que vencía por timeout, según las notas del 9-11), pero **como inyección de "interrupción de tráfico de red" no es fiable** tal cual está.
 
-**Desconexión con tráfico** (escala a 0 durante 60 s, T0 19:57:24, restaurada 19:58:25, `READY` 19:58:40): el cliente vio `502` x2 (19:57:30 a 19:57:32) y `503` x12 (19:58:14 a 19:58:32, el circuito abierto del gateway); el resto del tiempo recibió `429`, que tapa lo que pasó. Alertas: "Servicio caído" `firing` a +47 s; "Tasa de errores 5xx alta" `pending` a las 19:58:42 y `firing` a las 19:59:03 (+99 s), de nuevo en `Normal` a las 19:59:44. "Pod reiniciado" también pasó a `firing` a las 19:58:01 (y volvió a `Normal` a las 19:58:11), antes de restaurar la réplica; no se investigó la causa, pero indica que esa regla puede disparar en una desconexión sin que haya habido un reinicio de contenedor.
+**Desconexión con tráfico** (escala a 0 durante 60 s, T0 19:57:24, restaurada 19:58:25, `READY` 19:58:40): el cliente vio `502` x2 (19:57:30 a 19:57:32) y `503` x12 (19:58:14 a 19:58:32, el circuito abierto del gateway); el resto del tiempo recibió `429`, que tapa lo que pasó (ver la corrección arriba y la medición limpia en 3b). Alertas: "Servicio caído" `firing` a +47 s; "Tasa de errores 5xx alta" `pending` a las 19:58:42 y `firing` a las 19:59:03 (+99 s), de nuevo en `Normal` a las 19:59:44. "Pod reiniciado" también pasó a `firing` a las 19:58:01 (y volvió a `Normal` a las 19:58:11), antes de restaurar la réplica; no se investigó la causa, pero indica que esa regla puede disparar en una desconexión sin que haya habido un reinicio de contenedor.
+
+## 3b. Medición limpia de la desconexión (una sola fuente de tráfico)
+
+Sonda finita de 110 solicitudes a ~0,65 req/s ([registro](chaos-20261110/sonda-limpia-desconexion-1-replica.txt)) con todos los loops anteriores detenidos y el gateway reiniciado. `disconnect-component.sh pharmago-pharmacy-service scale 40` (1 réplica de Pharmacy), T0 20:11:24, réplica restaurada 20:12:05.
+
+| Qué ve el cliente | Resultado |
+| --- | --- |
+| Solicitudes | 110: 83 `200`, 2 `502`, 25 `503` (0 `429`) |
+| Primer fallo | 20:11:30, 6 s después de T0 (el pod tarda en terminar) |
+| Circuito abierto (503) | desde 20:11:33 |
+| Primer `200` de nuevo | 20:12:13, **8 s después de restaurar** la réplica |
+| Caída visible | ~43 s (los 40 s apagado más la recuperación) |
+
+Es con **1 réplica de Pharmacy** (perfil `local`), así que el corte coincide con el tiempo apagado. La comparación con 2 réplicas, que es lo que justificaría esa decisión, sigue pendiente.
+
+**Rate limiting verificado a mano** (gateway recién reiniciado, un cliente a ~1 req/s por port-forward, que cae en una sola réplica): 75 solicitudes dieron 67 `200` y 8 `429`, con el **primer `429` en la solicitud #51**. Coincide con el límite configurado de 50 por minuto por réplica. La regla de **500 por hora por réplica** equivale a unas 16 solicitudes por minuto de tráfico sostenido entre las dos réplicas; un cliente que supere eso durante una hora recibe `429` aunque respete el límite por minuto.
 
 ## 4. Defectos encontrados y corregidos
 
@@ -54,6 +70,6 @@ Tráfico de fondo de ~0,6 req/s a `/api/drug` por el gateway ([registro](chaos-2
 - **OOM del servicio.** El caos de memoria no provoca `OOMKilled` del contenedor del servicio: el kernel mata el proceso más grande, que es el inyectado. Solo se probó que la muerte del contenedor (`docker kill`) se detecta y se recupera.
 - **Alerta de disco del nodo** ("Disco disponible bajo"): requeriría llenar más del 85 % del disco del nodo. No se probó.
 - **`network-cut`** como interrupción real de tráfico: ver sección 3. Falta una variante que también corte las conexiones establecidas (por ejemplo, reiniciar la conexión de los clientes o usar otra técnica) y verificar con tráfico.
-- **Continuidad percibida por un cliente** durante la desconexión: no se pudo medir limpia porque el rate limiting devuelve `429` a mi tráfico antes de que se vea el comportamiento del backend. Con 0,6 req/s hubo 110 `429` de 163 solicitudes, aunque la documentación del equipo indica un límite de 50 por minuto por réplica. No se investigó la causa; conviene revisarlo antes de la defensa (por ejemplo, si el límite también cuenta las solicitudes rechazadas).
+- **Continuidad percibida por un cliente con 2 réplicas** de Pharmacy: solo se midió con 1 réplica (sección 3b).
 - **Cuánto tarda un cliente en ver recuperado el servicio** (el MTTR medido es hasta `READY` del pod, como en el resto del repo).
 - Falsos positivos con el stack en reposo (observación de pocos minutos), el comportamiento con 2 réplicas de Users y Pharmacy en el mismo stack, y tráfico real de clientes con datos de negocio.
