@@ -1,0 +1,273 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alert-rules
+  namespace: pharmago
+data:
+  alert-rules.yml: |
+    apiVersion: 1
+    groups:
+      - orgId: 1
+        name: pharmago-operacion
+        folder: PharmaGo
+        interval: 10s
+        rules:
+          - uid: pharmago-service-down
+            title: "Servicio caido (target down)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "up{job=~\"api-gateway|users-service|pharmacy-service\"}"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: lt
+                        params: [1]
+            noDataState: OK
+            execErrState: Error
+            for: 15s
+            annotations:
+              summary: "Un microservicio dejo de responder al scrape de Prometheus (falla de proceso o desconexion). Runbook: ver estado de pods y eventos."
+            labels:
+              severity: critical
+          - uid: pharmago-pod-restarts
+            title: "Pod reiniciado"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "max by (pod)(changes(container_start_time_seconds{namespace=\"pharmago\",container!=\"\"}[5m]))"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [0]
+            noDataState: OK
+            execErrState: Error
+            for: 0s
+            annotations:
+              summary: "Un contenedor se reinicio en los ultimos 5 min (self healing en accion o crash repetido)."
+            labels:
+              severity: warning
+          - uid: pharmago-cpu-high
+            title: "CPU de pod alta (% del limite)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "sum by (pod)(rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\"}[1m])) / sum by (pod)(container_spec_cpu_quota{namespace=\"pharmago\",container!=\"\"}/container_spec_cpu_period{namespace=\"pharmago\",container!=\"\"}) * 100"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [80]
+            noDataState: OK
+            execErrState: Error
+            for: 30s
+            annotations:
+              summary: "Un pod usa mas del 80% de su limite de CPU (sobrecarga o caos de CPU)."
+            labels:
+              severity: warning
+          - uid: pharmago-memory-high
+            title: "Memoria de pod alta (% del limite)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "sum by (pod)(container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\"}) / sum by (pod)(container_spec_memory_limit_bytes{namespace=\"pharmago\",container!=\"\"} > 0) * 100"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [85]
+            noDataState: OK
+            execErrState: Error
+            for: 30s
+            annotations:
+              summary: "Un pod usa mas del 85% de su limite de memoria (riesgo de OOMKilled o caos de memoria)."
+            labels:
+              severity: warning
+          - uid: pharmago-disk-low
+            title: "Disco disponible bajo"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "min(node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"} * 100)"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: lt
+                        params: [15]
+            noDataState: OK
+            execErrState: Error
+            for: 30s
+            annotations:
+              summary: "Menos del 15% de disco disponible en un filesystem del nodo (caos de storage)."
+            labels:
+              severity: warning
+          - uid: pharmago-5xx-rate
+            title: "Tasa de errores 5xx alta (%)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "(sum(rate(http_server_duration_ms_count{http_status_code=~\"5..\"}[1m])) or vector(0)) / sum(rate(http_server_duration_ms_count[1m])) * 100"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [5]
+            noDataState: OK
+            execErrState: Error
+            for: 30s
+            annotations:
+              summary: "Mas del 5% de las solicitudes HTTP terminan en 5xx (fallas reiteradas o servicio degradado)."
+            labels:
+              severity: critical
+          - uid: pharmago-rate-limit-429
+            title: "Rate limiting activo (429/s)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "sum(rate(http_server_duration_ms_count{http_status_code=\"429\"}[1m])) or vector(0)"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [1]
+            noDataState: OK
+            execErrState: Error
+            for: 15s
+            annotations:
+              summary: "El gateway rechaza mas de 1 solicitud/s con 429 (alto volumen de solicitudes, posible ataque)."
+            labels:
+              severity: warning

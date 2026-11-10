@@ -4,7 +4,7 @@ metadata:
   name: pharmago-api-gateway
   namespace: pharmago
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: pharmago-api-gateway
@@ -60,6 +60,11 @@ spec:
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
+        volumeMounts:
+        - name: gateway-resilience
+          mountPath: /app/appsettings.Production.json
+          subPath: appsettings.Production.json
+          readOnly: true
         # Recursos reducidos para nodos ~5GB (proyecto docente)
         resources:
           requests:
@@ -89,4 +94,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 2
           failureThreshold: 3
-
+      volumes:
+      - name: gateway-resilience
+        configMap:
+          name: gateway-resilience
