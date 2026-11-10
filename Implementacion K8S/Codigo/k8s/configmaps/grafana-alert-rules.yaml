@@ -96,7 +96,7 @@ data:
                   to: 0
                 datasourceUid: prometheus
                 model:
-                  expr: "sum by (pod)(rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\"}[1m])) / sum by (pod)(container_spec_cpu_quota{namespace=\"pharmago\",pod!=\"\"}/container_spec_cpu_period{namespace=\"pharmago\",pod!=\"\"}) * 100"
+                  expr: "sum by (pod)(rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\"}[1m])) / sum by (pod)(container_spec_cpu_quota{namespace=\"pharmago\",pod!=\"\",container=\"\"}/container_spec_cpu_period{namespace=\"pharmago\",pod!=\"\",container=\"\"}) * 100"
                   instant: true
                   refId: A
               - refId: B
@@ -133,7 +133,7 @@ data:
                   to: 0
                 datasourceUid: prometheus
                 model:
-                  expr: "sum by (pod)(container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\"}) / sum by (pod)(container_spec_memory_limit_bytes{namespace=\"pharmago\",pod!=\"\"} > 0) * 100"
+                  expr: "sum by (pod)(container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\"}) / sum by (pod)(container_spec_memory_limit_bytes{namespace=\"pharmago\",pod!=\"\",container=\"\"} > 0) * 100"
                   instant: true
                   refId: A
               - refId: B
