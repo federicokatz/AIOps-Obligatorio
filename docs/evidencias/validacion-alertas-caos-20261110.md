@@ -57,6 +57,24 @@ Es con **1 réplica de Pharmacy** (perfil `local`), así que el corte coincide c
 
 **Rate limiting verificado a mano** (gateway recién reiniciado, un cliente a ~1 req/s por port-forward, que cae en una sola réplica): 75 solicitudes dieron 67 `200` y 8 `429`, con el **primer `429` en la solicitud #51**. Coincide con el límite configurado de 50 por minuto por réplica. La regla de **500 por hora por réplica** equivale a unas 16 solicitudes por minuto de tráfico sostenido entre las dos réplicas; un cliente que supere eso durante una hora recibe `429` aunque respete el límite por minuto.
 
+## 3c. Pruebas complementarias
+
+**Las 8 expresiones de alerta devuelven datos.** Se tomó cada `expr` directamente del ConfigMap versionado y se ejecutó contra Prometheus: las 8 devuelven series (de 1 a 15 según la regla). Es la comprobación que habría detectado el defecto 1 de la sección 4.
+
+**Alerta de disco del nodo** (`Disco disponible bajo`, <15 % libre). El nodo de pruebas tiene 1 TB con 91 % libre, y la regla toma el **mínimo** entre todos los filesystems no `tmpfs` ni `overlay` (el más bajo en reposo era `/usr/lib/modules`, de 0,1 GB y solo lectura, con 41,8 %). Llenar el 85 % de un disco real no es viable, así que se creó un filesystem **ext4 de 300 MB en el nodo** (archivo de bucle montado en `/mnt/chaos-disk`, `node-exporter` reiniciado para que lo vea) y se llenó con 250 MB: el mínimo bajó a 0,8 % libre y la alerta pasó a `pending` a los +26 s y a `firing` a los +59 s ([captura](capturas/20261110-alerta-disco-nodo-firing.png)). Después se desmontó y se borró. **Es una prueba sintética**: demuestra que la regla y su cableado funcionan, no que un disco real de producción se llene así. Si el filesystem de bucle no se agrega, la alerta del nodo seguiría sin ser alcanzable con los scripts del repo.
+
+**OOM del servicio.** Con el límite de memoria de Pharmacy bajado **solo en el clúster de pruebas** a 72Mi (`kubectl set resources`, sin tocar los manifiestos) y `ram-spike.sh pharmago-pharmacy-service 36 30`: el contenedor del servicio murió por `OOMKilled` (código 137) a las 20:18:43, `restartCount` pasó de 0 a 1 y arrancó de nuevo 1 s después, quedando `READY`. Con el límite real de 384Mi esto no ocurre (el kernel mata el proceso inyectado, que es el mayor): hace falta que lo inyectado sea menor que lo que usa el servicio y que la suma supere el límite, por eso se bajó el límite. Los límites originales (128Mi/384Mi) se restauraron después. No se verificó si "Pod reiniciado" llegó a disparar en este caso.
+
+**Datos de negocio.** `apply-k8s.sh --profile local --seed-data` cargó el `seed-data.sql` del repo sin errores con `sqlcmd` (incluida la versión adaptada para DBeaver). Con eso el login de `admin` devuelve un token (`200`) y `/api/drug` devuelve medicamentos.
+
+## 3d. Stack en reposo (falsos positivos)
+
+30 minutos (20:20 a 20:51 UTC) con el stack completo, datos de negocio cargados y **sin ningún caos**, con tráfico suave de ~7 solicitudes por minuto (un `GET /api/drug` cada 10 s y un login válido por minuto, bien por debajo de los límites del gateway). Registros: [estado de las alertas](chaos-20261110/soak-30min-estado-alertas.txt) cada 10 s y [tráfico](chaos-20261110/soak-30min-trafico.txt).
+
+- **Tráfico:** 180 de 180 `GET /api/drug` con `200` y 30 de 30 logins con `200`.
+- **Alertas:** ninguna disparó sola. La única que apareció fue "Pod reiniciado", de 20:20:39 a 20:23:44: es el rastro de mis reinicios previos (el OOM de las 20:18:43 y la recarga del seed), porque esa regla mira una ventana de 5 minutos. Desde las 20:27 las 8 reglas estuvieron en `Normal` el resto de la prueba.
+- **Alcance:** una sola observación de 30 minutos con carga mínima. No descarta falsos positivos con carga alta ni en periodos largos; el umbral de memoria (85 %) sigue cerca del uso de SQL Server y Elasticsearch según el plan de contención.
+
 ## 4. Defectos encontrados y corregidos
 
 1. **Las alertas de CPU y memoria no podían dispararse (defecto heredado del PR #5).** Usaban `container!=""` también sobre `container_spec_cpu_quota`, `container_spec_cpu_period` y `container_spec_memory_limit_bytes`. En este clúster esas series de límites existen solo a nivel de pod (etiquetas `pod` y `namespace`, sin `container`), así que el denominador quedaba vacío y la regla no tenía datos. Con la expresión original la CPU llegó a 0,49 cores (97 % del límite) y la alerta nunca salió de `Normal`. **Corrección:** el filtro de los límites pasa a `pod!=""`.
@@ -67,9 +85,9 @@ Es con **1 réplica de Pharmacy** (perfil `local`), así que el corte coincide c
 
 ## 5. Qué NO se probó o quedó sin resolver
 
-- **OOM del servicio.** El caos de memoria no provoca `OOMKilled` del contenedor del servicio: el kernel mata el proceso más grande, que es el inyectado. Solo se probó que la muerte del contenedor (`docker kill`) se detecta y se recupera.
-- **Alerta de disco del nodo** ("Disco disponible bajo"): requeriría llenar más del 85 % del disco del nodo. No se probó.
+- **OOM del servicio con el límite real (384Mi).** El caos de memoria no lo provoca: el kernel mata el proceso inyectado. Solo se obtuvo `OOMKilled` del servicio bajando el límite a 72Mi en el clúster de pruebas (sección 3c).
+- **Alerta de disco del nodo con un disco real:** solo se probó con un filesystem de prueba de 300 MB (sección 3c); con el disco de 1 TB sigue siendo inalcanzable con los scripts.
 - **`network-cut`** como interrupción real de tráfico: ver sección 3. Falta una variante que también corte las conexiones establecidas (por ejemplo, reiniciar la conexión de los clientes o usar otra técnica) y verificar con tráfico.
 - **Continuidad percibida por un cliente con 2 réplicas** de Pharmacy: solo se midió con 1 réplica (sección 3b).
 - **Cuánto tarda un cliente en ver recuperado el servicio** (el MTTR medido es hasta `READY` del pod, como en el resto del repo).
-- Falsos positivos con el stack en reposo (observación de pocos minutos), el comportamiento con 2 réplicas de Users y Pharmacy en el mismo stack, y tráfico real de clientes con datos de negocio.
+- Falsos positivos con carga alta o en periodos largos (solo hay 30 minutos de reposo, sección 3d), el comportamiento con 2 réplicas de Users y Pharmacy en el mismo stack, y tráfico real de clientes con datos de negocio.
