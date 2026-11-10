@@ -15,6 +15,16 @@ spec:
               - key: node-type
                 operator: In
                 values: [backend]
+        # Las replicas del mismo servicio comparten nodo (afinidad hacia si mismo): con 3 nodos backend
+        # y antiafinidad entre servicios, evita que un servicio ocupe 2 nodos y deje a otro en Pending.
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values: [pharmago-api-gateway]
+            topologyKey: kubernetes.io/hostname
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
