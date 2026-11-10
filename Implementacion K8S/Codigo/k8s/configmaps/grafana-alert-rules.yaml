@@ -96,7 +96,7 @@ data:
                   to: 0
                 datasourceUid: prometheus
                 model:
-                  expr: "sum by (pod)(rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\"}[1m])) / sum by (pod)(container_spec_cpu_quota{namespace=\"pharmago\",container!=\"\"}/container_spec_cpu_period{namespace=\"pharmago\",container!=\"\"}) * 100"
+                  expr: "sum by (pod)(rate(container_cpu_usage_seconds_total{namespace=\"pharmago\",container!=\"\"}[1m])) / sum by (pod)(container_spec_cpu_quota{namespace=\"pharmago\",pod!=\"\"}/container_spec_cpu_period{namespace=\"pharmago\",pod!=\"\"}) * 100"
                   instant: true
                   refId: A
               - refId: B
@@ -133,7 +133,7 @@ data:
                   to: 0
                 datasourceUid: prometheus
                 model:
-                  expr: "sum by (pod)(container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\"}) / sum by (pod)(container_spec_memory_limit_bytes{namespace=\"pharmago\",container!=\"\"} > 0) * 100"
+                  expr: "sum by (pod)(container_memory_working_set_bytes{namespace=\"pharmago\",container!=\"\"}) / sum by (pod)(container_spec_memory_limit_bytes{namespace=\"pharmago\",pod!=\"\"} > 0) * 100"
                   instant: true
                   refId: A
               - refId: B
@@ -195,6 +195,43 @@ data:
             for: 30s
             annotations:
               summary: "Menos del 15% de disco disponible en un filesystem del nodo (caos de storage)."
+            labels:
+              severity: warning
+          - uid: pharmago-pod-storage-high
+            title: "Storage de pod alto (capa escribible, MB)"
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: "max by (k8s_pod_name)(container_filesystem_usage{k8s_namespace_name=\"pharmago\"}) / 1000000"
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  type: reduce
+                  expression: A
+                  reducer: last
+                  refId: B
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: B
+                  refId: C
+                  conditions:
+                    - evaluator:
+                        type: gt
+                        params: [100]
+            noDataState: OK
+            execErrState: Error
+            for: 30s
+            annotations:
+              summary: "Un pod escribe mas de 100 MB en su filesystem de contenedor (caos de storage por pod; la alerta de disco del nodo no lo detecta)."
             labels:
               severity: warning
           - uid: pharmago-5xx-rate
