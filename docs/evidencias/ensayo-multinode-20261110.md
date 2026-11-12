@@ -43,15 +43,15 @@ Lección para la defensa: con nodos de 1,8 GB no cabe el stack completo; con el 
 
 ## 4. Camino A: repetir el crash, medido desde dentro del clúster
 
-La sonda de la sección 2 tenía resolución de ~1,3 s y una sola ejecución. Se repitió con un pod sonda dentro del clúster que hace ~10 solicitudes por segundo directo al Service de Pharmacy (`/health`), sin pasar por el gateway ni su rate limit, matando el contenedor con `crictl stop` en el nodo. Tres corridas por caso, y el orden importa (ver abajo). Registros: `camino-A-*.txt`.
+La sonda de la sección 2 tenía resolución de ~1,3 s y una sola ejecución. Se repitió con un pod sonda dentro del clúster que hace ~10 solicitudes por segundo directo al Service de Pharmacy (`/health`), sin pasar por el gateway ni su rate limit, matando el contenedor con `crictl stop` en el nodo. Tres corridas por caso, y el orden importa (ver abajo). La *ventana de errores* es el tiempo entre la primera y la última solicitud fallida (la sonda tiene una resolución de ~0,1 s); en la versión inicial de este documento se había sumado por error 0,12 s a las ventanas del camino A, y se corrigió el 12-11 con un script que recalcula las cifras desde los registros crudos. Registros: `camino-A-*.txt`.
 
 | Réplicas | Corrida | Solicitudes fallidas | Ventana de errores |
 | :---: | :---: | ---: | ---: |
-| 2 | 1 / 2 / 3 | 5 / 6 / 7 | 0,81 / 0,64 / 0,81 s |
-| 1 | 1 / 2 / 3 | 25 / 31 / 36 | **12,8 / 27,6 / 32,0 s** |
+| 2 | 1 / 2 / 3 | 5 / 6 / 7 | 0,69 / 0,52 / 0,69 s |
+| 1 | 1 / 2 / 3 | 25 / 31 / 36 | **12,7 / 27,5 / 31,9 s** |
 
-- Con 2 réplicas la caída visible es de unos 0,7 s y no cambia entre corridas: es el rezago de kube-proxy en sacar el endpoint del contenedor muerto. Los primeros fallos aparecen ~1,4 s después de pedir el stop (lo que tarda el contenedor en terminar).
-- **Con 1 réplica la caída crece a cada crash consecutivo** (12,8 s, 27,6 s, 32,0 s; `restartCount` 3, 4, 4). Es el *backoff exponencial* de kubelet: cuanto más se mata el mismo contenedor, más espera para reiniciarlo (hasta 5 minutos). Por eso la medición de ~3 s de la sección 2 era la de un **primer** crash. Esto es relevante para el requisito de la rúbrica de resistir fallas reiteradas: con 1 réplica, una serie de crashes degrada el servicio cada vez más; con 2 réplicas, la otra absorbe el golpe.
+- Con 2 réplicas la caída visible es de unos 0,5 a 0,7 s y no cambia entre corridas: es el rezago de kube-proxy en sacar el endpoint del contenedor muerto. Los primeros fallos aparecen ~1,4 s después de pedir el stop (lo que tarda el contenedor en terminar).
+- **Con 1 réplica la caída crece a cada crash consecutivo** (12,7 s, 27,5 s, 31,9 s; `restartCount` 3, 4, 4). Es el *backoff exponencial* de kubelet: cuanto más se mata el mismo contenedor, más espera para reiniciarlo (hasta 5 minutos). Por eso la medición de ~3 s de la sección 2 era la de un **primer** crash. Esto es relevante para el requisito de la rúbrica de resistir fallas reiteradas: con 1 réplica, una serie de crashes degrada el servicio cada vez más; con 2 réplicas, la otra absorbe el golpe.
 
 ## 5. Camino B: gateway y Users
 
