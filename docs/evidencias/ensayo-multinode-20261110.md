@@ -77,6 +77,8 @@ Se detuvo con `minikube node stop` el nodo donde estaban las 2 réplicas de Phar
 
 **Hallazgo:** la `podAffinity` obligatoria de cada servicio hacia sí mismo (decisión del overlay `multinode`, que evitaba que un servicio ocupara dos nodos y dejara a otro en `Pending`) **impide que el servicio se cure cuando cae su nodo**, porque los reemplazos solo pueden ir a un nodo que ya tenga un pod del mismo servicio, y ese es el nodo muerto. Con la afinidad **preferida** (peso 100) las réplicas siguen compartiendo nodo en el despliegue normal y pueden ir a otro nodo cuando hace falta. Con 4 nodos backend y afinidad preferida, los tres servicios quedaron cada uno entero en un único nodo y sin pods `Pending`. El tiempo de curación está dominado por la tolerancia de eviction (`tolerationSeconds`, 300 s por defecto, más ~40 s de detección del nodo caído).
 
+**Decisión (12-11-2026, tras consultar al docente):** no se cambian los manifiestos. El docente indicó que la afinidad obligatoria entre réplicas es una restricción poco habitual (las réplicas caen juntas) pero que se deje así, que el ítem de plataforma está cerrado y que todo esto se mencione en el informe como experimentación con affinities, anti-affinities, taints y tolerations. La defensa puede hacerse en Minikube de un nodo. El hallazgo queda como limitación documentada.
+
 Los casos C3 y C4 se hicieron **solo en el clúster de pruebas** (parches con `kubectl patch`), no con los manifiestos del repo, que siguen con afinidad obligatoria. Requieren un nodo backend de repuesto y la imagen cargada en él.
 
 ## 7. Camino D: telemetría y `chaos-all` sobre `multinode`
