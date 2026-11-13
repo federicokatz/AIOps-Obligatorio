@@ -1,0 +1,13 @@
+# Tráfico de fondo de la corrida completa del 10-11 (medición inválida)
+
+Se conserva solo el resumen. El registro original tenía 2.541 líneas y se reemplazó por esto.
+
+Periodo: 19:31:19 a 20:00:24 UTC
+Solicitudes: 2.541 a /api/drug por el gateway
+Códigos: 617 x 200, 1.891 x 429, 27 x 503, 2 x 502, 4 x 000
+
+Causa: un loop de tráfico de 2 solicitudes por segundo quedó corriendo de fondo, porque pkill no lo detenía en Git Bash. Agotó el límite del gateway (50 por minuto y 500 por hora por réplica) y casi todo fue 429.
+
+Qué no se puede concluir: nada sobre la disponibilidad del servicio ni sobre cómo vio un cliente cada falla. Las alertas de esa corrida (estado-alertas-cada-10s.txt) sí valen, salvo la de rate limiting de las 19:41:46, que viene de este tráfico.
+
+Más detalle en ../validacion-alertas-caos-20261110.md, sección 2.
