@@ -29,7 +29,7 @@ Comando: `TARGET=pharmago-pharmacy-service PAUSE=110 REQUESTS=500 CPU_SECS=100 R
 
 - **Desconexión:** la restauración de la réplica fue a las 19:45:28 y el pod llegó a `READY` a las 19:45:45 (**17 s** tras restaurar, 57 s desde T0). Coherente con los 16 s del 9-11.
 - **Efecto cruzado:** la fase de storage también disparó la alerta de memoria (19:41:25 a 19:42:57): el archivo de 300 MB cuenta en el working set como caché de página. Es esperable, pero hay que explicarlo si aparece en la defensa.
-- **El tráfico de fondo de esta corrida no sirve** ([registro](chaos-20261110/trafico-fondo-corrida-completa-429.txt)): mis 2 req/s a `/api/drug` agotaron el límite del gateway y casi todo fue `429` (951 de 1450 en las primeras mediciones). La alerta de rate limiting que aparece a las 19:41:46 es consecuencia de ese tráfico y no de una fase del caos. Se conserva por transparencia.
+- **El tráfico de fondo de esta corrida no sirve** ([resumen](chaos-20261110/trafico-fondo-invalido-resumen.txt)): mis 2 req/s a `/api/drug` agotaron el límite del gateway y casi todo fue `429` (1.891 de 2.541 solicitudes). La alerta de rate limiting que aparece a las 19:41:46 es consecuencia de ese tráfico y no de una fase del caos. Del registro original, de 2.541 líneas, se conserva solo el resumen.
 
 ## 3. Experimentos controlados (tráfico por debajo del límite)
 
