@@ -4,6 +4,7 @@ metadata:
   name: pharmago-pharmacy-service
   namespace: pharmago
 spec:
+  replicas: 2
   template:
     spec:
       affinity:
@@ -15,6 +16,16 @@ spec:
               - key: node-type
                 operator: In
                 values: [backend]
+        # Las replicas del mismo servicio comparten nodo (afinidad hacia si mismo): con 3 nodos backend
+        # y antiafinidad entre servicios, evita que un servicio ocupe 2 nodos y deje a otro en Pending.
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values: [pharmago-pharmacy-service]
+            topologyKey: kubernetes.io/hostname
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:

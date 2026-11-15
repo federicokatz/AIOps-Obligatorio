@@ -52,6 +52,12 @@ Ver el análisis de ramas más reciente en la conversación/PR; resumen al 10/10
 - `codex/self-healing` (no mergeada): probes HTTP `/health` en los tres servicios, `measure-self-healing.ps1`, CSV con 9/9 recuperaciones (5,2–10,05 s), `docs/contexto-aiops.md`.
 - Pendiente: rate limiting multi-réplica / circuit breaker, múltiples réplicas, despliegue seguro, alertas, anomalías, runbook, caos, diagrama.
 
+## Guía del docente (12-11-2026)
+
+- Minikube solo tiene un nodo: la **defensa puede hacerse con todo en Minikube de un solo nodo** (perfil `local`); hay que poder explicar cómo la arquitectura cumple el punto de plataforma si lo preguntan.
+- El ítem de plataforma (affinities, anti-affinities, taints y tolerations) se da por **cerrado**. El overlay `multinode` se deja como está (la `podAffinity` obligatoria entre réplicas del mismo servicio es poco habitual porque caen juntas con su nodo, pero no se cambia).
+- **Mencionar en el informe final** esa experimentación y el hallazgo sobre la caída de un nodo (ver `docs/evidencias/ensayo-multinode-20261110.md`).
+
 ## Limitaciones a explicitar en el informe
 
 - Minikube multinodo local demuestra separación entre nodos de Kubernetes, **no** nodos físicos distintos.

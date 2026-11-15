@@ -8,7 +8,8 @@ param(
   [int]$Pause = 60,
   [int]$Requests = 500,
   [int]$CpuSecs = 30,
-  [int]$RamMb = 200,
+  [int]$RamMb = 320,
+  [int]$RamSecs = 30,
   [int]$DiskMb = 300,
   [int]$NetSecs = 30,
   [int]$DownSecs = 30
@@ -36,7 +37,7 @@ function Clear-PodFiles {
   $pod = kubectl get pod -n $ns -l app=$Target -o jsonpath='{.items[0].metadata.name}' 2>$null
   if ($pod) {
     kubectl exec -n $ns $pod -- rm -f /dev/shm/fill /tmp/fill /tmp/chaos_fill 2>$null
-    # cpu-spike.sh deja sus 4 bucles corriendo al terminar: se matan aqui.
+    # Red de seguridad: cpu-spike.sh ya detiene sus bucles (trap); esto cubre una interrupcion a mitad de fase.
     # (el patron do[n]e evita que el propio comando se mate a si mismo)
     $kill = 'for p in /proc/[0-9]*; do tr "\0" " " < $p/cmdline 2>/dev/null | grep -q "while :;do :;do[n]e" && kill -9 ${p#/proc/} 2>/dev/null; done; true'
     kubectl exec -n $ns $pod -- sh -c $kill 2>$null
@@ -58,7 +59,7 @@ Write-Host "Registro: $out"
 try {
   Invoke-Phase 'requests'    { sh "$dir/load-requests.sh" $Requests }
   Invoke-Phase 'cpu'         { sh "$dir/cpu-spike.sh" $Target $CpuSecs }
-  Invoke-Phase 'memoria'     { sh "$dir/ram-spike.sh" $Target $RamMb }
+  Invoke-Phase 'memoria'     { sh "$dir/ram-spike.sh" $Target $RamMb $RamSecs }
   Clear-PodFiles
   Invoke-Phase 'storage'     { sh "$dir/volume-spike.sh" $Target $DiskMb }
   Clear-PodFiles

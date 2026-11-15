@@ -1,0 +1,29 @@
+# Prueba de scheduling del overlay multinode (afinidad entre replicas)
+# Fecha: 2026-11-10T18:50:39Z | Minikube perfil 'multi', 5 nodos (1 ops/control-plane, 3 backend, 1 frontend), contenedores Docker en un solo host
+# Alcance: solo ubicacion de pods. Las imagenes no existen en este cluster: no se probo arranque, READY ni trafico.
+
+## Nodos
+NAME        STATUS   ROLES           AGE     VERSION   NODE-TYPE
+multi       Ready    control-plane   4m28s   v1.37.0   ops
+multi-m02   Ready    <none>          3m49s   v1.37.0   backend
+multi-m03   Ready    <none>          3m13s   v1.37.0   backend
+multi-m04   Ready    <none>          2m37s   v1.37.0   backend
+multi-m05   Ready    <none>          118s    v1.37.0   frontend
+
+## Con podAffinity (overlay multinode actual), namespace pharmago
+      3 pharmago-api-gateway -> multi-m03
+      3 pharmago-pharmacy-service -> multi-m04
+      3 pharmago-users-service -> multi-m02
+(tras 'rollout restart' de los 3 deployments el pod extra de maxSurge cayo en el mismo nodo; 0 pods sin nodo)
+
+## Control SIN podAffinity, namespace control
+APP                         NODE        PHASE
+pharmago-api-gateway        multi-m03   Pending
+pharmago-api-gateway        multi-m04   Pending
+pharmago-pharmacy-service   multi-m02   Pending
+pharmago-pharmacy-service   multi-m02   Pending
+pharmago-users-service      <none>      Pending
+pharmago-users-service      <none>      Pending
+
+## Evento de un pod sin nodo en el control
+  Warning  FailedScheduling  29s   default-scheduler  0/5 nodes are available: 2 node(s) didn't match Pod's node affinity/selector, 3 node(s) didn't match pod anti-affinity rules. preemption: 0/5 nodes are available: 2 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.

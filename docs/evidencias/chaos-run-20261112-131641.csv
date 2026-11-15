@@ -1,0 +1,7 @@
+fase,target,t0_utc,t_fin_utc,codigo_salida
+requests,pharmago-pharmacy-service,2026-11-12T13:16:41Z,2026-11-12T13:16:48Z,0
+cpu,pharmago-pharmacy-service,2026-11-12T13:18:38Z,2026-11-12T13:20:18Z,0
+memoria,pharmago-pharmacy-service,2026-11-12T13:22:08Z,2026-11-12T13:23:53Z,0
+storage,pharmago-pharmacy-service,2026-11-12T13:25:43Z,2026-11-12T13:25:44Z,0
+red,pharmago-pharmacy-service,2026-11-12T13:27:34Z,2026-11-12T13:28:05Z,0
+desconexion,pharmago-pharmacy-service,2026-11-12T13:29:55Z,2026-11-12T13:30:51Z,0
