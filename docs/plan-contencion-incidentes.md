@@ -1,10 +1,10 @@
 # Plan de contención de incidentes operacionales
 
-Estado: **borrador completo, pendiente de revisión del equipo.** Los playbooks de CPU, memoria, storage, red y desconexión se contrastaron con los scripts de caos el 09-11-2026 en Minikube de un solo nodo (evidencia en `docs/evidencias/chaos-run-20261109-notas.md`, rama `feature/chaos-scripts`). Falta validar el flood con `load-requests.sh` y la caída de la base de datos.
+Estado: **listo para revisión del equipo.** Los playbooks se contrastaron con los scripts de caos en Minikube de un solo nodo: pruebas del 09-11-2026 (`docs/evidencias/chaos-run-20261109-notas.md`) y corrida completa de `chaos-all` del 12-11-2026 (`docs/evidencias/ensayo-defensa-local-20261112.md`). Falta validar el flood con `load-requests.sh` midiendo 200 y 429, y la caída de la base de datos.
 
 Este plan cubre el ítem "Plan de contención de incidentes operacionales" de la rúbrica. Está pensado para usarse en vivo durante el war-room de la defensa: dice qué mirar, quién decide y qué ejecutar. Se apoya en lo ya implementado (probes, self healing, circuit breaker, rate limiting, alertas de Grafana).
 
-> **Dependencia:** varias alertas y mecanismos citados (las 7 reglas de Grafana, el circuit breaker YARP, las 2 réplicas del gateway con rate limit dividido) están hoy en la rama `feature/rate-limiting` y **no en `develop`**. Este plan asume que esa rama se integra antes de la defensa. Si no se integra, hay que ajustar las secciones marcadas con ⚠.
+> **Entorno de validación:** Minikube de un nodo, una réplica de Users y Pharmacy, dos del gateway. Las 8 reglas de Grafana, el circuit breaker YARP y el rate limiting dividido entre 2 réplicas ya están en `develop`. Las cifras son de una sola ejecución.
 
 ## 1. Alcance
 
@@ -19,7 +19,7 @@ Se sigue el ciclo visto en la clase 5. Cada fase tiene su resultado esperado y d
 | Fase | Objetivo | En este proyecto |
 | --- | --- | --- |
 | **Prepare** | Que el equipo y el sistema estén listos antes del incidente. | Probes, réplicas, límites de recursos, rate limiting, circuit breaker, alertas, dashboards, scripts de caos, este plan. Checklist previo en la sección 6. |
-| **Detect** | Enterarse rápido y con evidencia. | 7 reglas de Grafana (`pharmago-operacion`, evaluación cada 10 s), dashboards "PharmaGo - Overview" e "Infra", logs JSON en Kibana, trazas por correlation id. |
+| **Detect** | Enterarse rápido y con evidencia. | 8 reglas de Grafana (`pharmago-operacion`, evaluación cada 10 s), dashboards "PharmaGo - Overview" e "Infra", logs JSON en Kibana, trazas por correlation id. |
 | **Respond** | Contener el impacto y estabilizar. | Mecanismos automáticos (Kubernetes, YARP) y acciones manuales del playbook correspondiente. |
 | **Recover** | Volver al estado normal y comprobarlo. | Criterios de recuperación por playbook (pods `READY`, alerta en `Normal`, `/health` respondiendo, tráfico sin 5xx). |
 | **Learn** | Que no se repita y quede registrado. | Postmortem (sección 7) y evidencia en `docs/evidencias/`. |
@@ -69,7 +69,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.1 Sobrecarga de requests (flood)
 
-**Estado:** Parcial. Probado: rate limiting dividido (100/min efectivos con 2 réplicas) y disparo de la alerta de 429 (`pending` a los 16 s, `firing` a los 32 s). No probado: flood con `load-requests.sh` y usuarios distintos. ⚠ Depende de `feature/rate-limiting`.
+**Estado:** Parcial. Probado: rate limiting dividido (100/min efectivos con 2 réplicas) y disparo de la alerta de 429 (`pending` a los 16 s, `firing` a los 32 s). En la corrida completa de `chaos-all` (12-11-2026, 500 login con `load-requests.sh`) la alerta "Rate limiting activo" pasó a `pending` a los 36 s, `firing` a los 56 s y volvió a `Normal` a los 86 s. No medido: la proporción de respuestas 200 y 429 del flood, ni con usuarios distintos.
 
 | Campo | Contenido |
 | --- | --- |
@@ -85,7 +85,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.2 Sobrecarga de CPU
 
-**Estado:** Probado. Con `cpu-spike.sh` la CPU del pod pasó de 0,02 a 0,46 cores (~93 % del límite de 0,5), medido en Prometheus. Defecto del script: deja sus 4 bucles corriendo al terminar; hay que matarlos o reemplazar el pod (`chaos-all` ya los limpia). No se confirmó el disparo de la alerta en Grafana en esta tanda (las alertas viven en `feature/rate-limiting`).
+**Estado:** Probado. Con `cpu-spike.sh` la CPU del pod pasó de 0,02 a 0,46 cores (~93 % del límite de 0,5). La alerta "CPU de pod alta" llegó a `firing` a los 91 s en la corrida completa del 12-11-2026 (`pending` a los 61 s, `Normal` a los 122 s). El script ya termina sus bucles solo (`trap`).
 
 | Campo | Contenido |
 | --- | --- |
@@ -93,7 +93,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 | **Síntoma** | CPU del pod pegada al límite (500m); latencia mayor; el contenedor es limitado (throttling), no reiniciado. |
 | **Detección** | Alerta "CPU de pod alta (% del límite)" (> 80 %, 30 s). Panel "CPU por pod" del dashboard Infra. |
 | **Qué hace el sistema solo** | El límite de CPU acota el daño a ese pod y al nodo. Kubernetes **no** reinicia por CPU alta. Si la liveness `/health` no responde a tiempo (timeout 2 s, 3 fallos), el pod se reinicia. |
-| **Diagnóstico** | 1) Qué pod: panel de CPU por pod. 2) `kubectl top pod -n pharmago` (⚠ la Metrics API no está disponible en este clúster; usar Grafana). 3) Latencia y 5xx del servicio afectado. 4) Si hay réplicas, ver si el resto absorbe el tráfico. |
+| **Diagnóstico** | 1) Qué pod: panel de CPU por pod. 2) `kubectl top pod -n pharmago` (la Metrics API no está disponible en este clúster; usar Grafana). 3) Latencia y 5xx del servicio afectado. 4) Si hay réplicas, ver si el resto absorbe el tráfico. |
 | **Contención** | Eliminar el pod afectado para que el Deployment lo reemplace: `kubectl delete pod <pod> -n pharmago`. Con réplicas (gateway) no hay corte; con 1 réplica hay una ventana de recuperación de unos segundos. Si la carga es real y sostenida, escalar réplicas. |
 | **Recuperación** | Alerta en `Normal`, pod nuevo `READY`, latencia normal. |
 | **Humano vs. automático** | Automático: el límite de CPU y, eventualmente, el reinicio por liveness. Humano: reemplazar el pod o escalar. |
@@ -101,11 +101,11 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.3 Sobrecarga de memoria
 
-**Estado:** Parcial. `/dev/shm` mide solo 64 MB: con 200 MB pedidos el `dd` falla y el resto cae a `/tmp` (disco). El working set subió de 32 a 183 MB, en gran parte por caché de página; no se llegó al límite de 384Mi ni a un OOM. Para presionar el límite de verdad hace falta otra técnica (un proceso que reserve RAM).
+**Estado:** Parcial. `ram-spike.sh` reserva memoria residente por bloques de 1 MB (antes escribía en `/dev/shm`, que mide 64 MB, y el resto caía a disco). Con 290 MB la alerta "Memoria de pod alta" llegó a `firing` a los 44 s (corrida del 12-11-2026). Con el límite real de 384Mi el kernel mata al proceso inyectado y el servicio sigue en pie: **no se observó OOMKilled del servicio**, solo bajando el límite en un clúster de pruebas.
 
 | Campo | Contenido |
 | --- | --- |
-| **Falla / inyección** | `chaos-engineering/ram-spike.sh [deployment] [MB]` escribe MB en `/dev/shm` (o `/tmp` si falla). |
+| **Falla / inyección** | `chaos-engineering/ram-spike.sh [deployment] [MB] [segundos]` reserva MB de memoria residente dentro del contenedor durante N segundos. |
 | **Síntoma** | Memoria del pod subiendo hacia 384Mi; si la supera, el contenedor es terminado por OOM y reiniciado. |
 | **Detección** | Alerta "Memoria de pod alta (% del límite)" (> 85 %, 30 s). "Pod reiniciado" si hubo OOM. Panel "Memoria por pod". |
 | **Qué hace el sistema solo** | Al superar el límite, el kernel mata el contenedor y kubelet lo reinicia (`OOMKilled`, código 137); readiness lo saca del tráfico mientras tanto. |
@@ -117,7 +117,7 @@ Cada playbook tiene los mismos campos. Convenciones:
 
 ### 5.4 Sobrecarga de storage
 
-**Estado:** Parcial, desalineación confirmada. El script escribe el archivo, pero la alerta mide el disco **del nodo** (< 15 %) y el nodo de prueba tenía ~92,6 % libre (933 GB de 1007 GB): 300 MB no la disparan. Falta alertar sobre uso por contenedor o fijar un límite de `ephemeral-storage`.
+**Estado:** Probado con alerta por pod. La alerta de disco mide el **nodo** (< 15 %) y el nodo de prueba tenía ~92,6 % libre: 300 MB no la disparan. Por eso se agregó "Storage de pod alto" (> 100 MB en la capa escribible del contenedor), que llegó a `firing` a los 92 s en la corrida del 12-11-2026. Efecto cruzado: el archivo de 300 MB cuenta en la caché de página y también disparó la alerta de memoria. Sigue sin haber límite de `ephemeral-storage`.
 
 | Campo | Contenido |
 | --- | --- |
@@ -129,15 +129,15 @@ Cada playbook tiene los mismos campos. Convenciones:
 | **Contención** | Borrar el archivo generado o reemplazar el pod (`kubectl delete pod <pod> -n pharmago`, el filesystem del contenedor se recrea). Si el disco lleno es de Elasticsearch o Prometheus (volúmenes persistentes), reducir retención o ampliar el volumen. |
 | **Recuperación** | Disco disponible > 15 %, alerta en `Normal`, sin condición `DiskPressure`, pod `READY`. |
 | **Humano vs. automático** | Automático: eviction por presión de disco. Humano: limpiar o reemplazar, y definir límites de `ephemeral-storage` (mejora propuesta). |
-| **Límites conocidos** | Sin límite por pod, un solo pod puede afectar a otros del mismo nodo. Falta alinear alerta y script (probar con un tamaño que llegue al umbral o alertar sobre `container_fs_usage_bytes`). |
+| **Límites conocidos** | Sin límite por pod, un solo pod puede afectar a otros del mismo nodo. La alerta por pod cubre el caos de storage; la de disco del nodo solo se probó con un filesystem sintético. |
 
 ### 5.5 Interrupción de tráfico de red
 
-**Estado:** Parcial. Existe el script `network-cut` (rama `feature/chaos-scripts`) y se probó con **Calico**: `wget` al `/health` pasó de `Healthy` a `timed out` durante el corte y volvió al restaurar. Con el CNI por defecto de Minikube no se probó (puede no tener efecto). No existe alerta específica; no se midió la reacción del circuit breaker ante el corte.
+**Estado:** Parcial. El script `network-cut` funciona con **Calico**, pero la `NetworkPolicy` bloquea solo conexiones **nuevas**: con tráfico ya abierto (keep-alive) el cliente siguió recibiendo 200 y Prometheus siguió viendo `up=1` (10-11-2026). Una sonda que abre una conexión nueva por solicitud sí vio el corte: 28,9 s de fallos con una política de 30 s (12-11-2026). **Ninguna alerta reaccionó al corte.** Con el CNI por defecto de Minikube no se probó.
 
 | Campo | Contenido |
 | --- | --- |
-| **Falla / inyección** | `chaos-engineering/network-cut.sh [deployment] [segundos]` aplica una `NetworkPolicy` de denegación total (ingress y egress) sobre el servicio y la retira al terminar (`restore` la retira a mano). ⚠ Requiere que el CNI del clúster haga cumplir las políticas; en Minikube con CNI por defecto puede no hacerlo. Verificar antes de la defensa; alternativa: `kubectl exec ... iptables` o escalar a 0 el Service destino. |
+| **Falla / inyección** | `chaos-engineering/network-cut.sh [deployment] [segundos]` aplica una `NetworkPolicy` de denegación total (ingress y egress) sobre el servicio y la retira al terminar (`restore` la retira a mano). ⚠ Requiere que el CNI del clúster haga cumplir las políticas; en Minikube con CNI por defecto puede no hacerlo. Verificar antes de la defensa. Decisión del equipo: documentarlo como limitación y usar la desconexión de componente como falla principal; alternativa: `kubectl exec ... iptables` o escalar a 0 el Service destino. |
 | **Síntoma** | Timeouts o 502/503 en el gateway hacia el servicio aislado; el pod sigue `Running` y su `/health` local responde. |
 | **Detección** | **Sin alerta directa.** Señales indirectas: "Tasa de errores 5xx alta"; "Servicio caído" si el scrape de Prometheus también queda bloqueado; caída de las métricas de red del pod (panel de red del dashboard Infra). |
 | **Qué hace el sistema solo** | El circuit breaker del gateway (sondeo activo de `/health` cada 3 s, 2 fallos) corta con 503 tras ~10 s en vez de acumular conexiones. Las probes de Kubernetes no distinguen la partición si el chequeo se hace dentro del pod. |
@@ -145,11 +145,11 @@ Cada playbook tiene los mismos campos. Convenciones:
 | **Contención** | Retirar la política (`kubectl delete networkpolicy <nombre> -n pharmago`) o corregir la causa. Mientras tanto el circuit breaker protege al gateway. |
 | **Recuperación** | El gateway vuelve a sondear con éxito `/health`; las solicitudes dejan de devolver 503; 5xx bajo 5 %. Se midió que tras volver un servicio caído, la recuperación del gateway fue inmediata (200 a los 43 s en total, incluyendo el arranque del pod). |
 | **Humano vs. automático** | Automático: 503 rápido por circuit breaker. Humano: detectar la causa de red y restaurarla. |
-| **Brecha a cubrir** | Agregar una alerta (por ejemplo, error de conexión upstream o caída brusca del tráfico de red por pod) y medir la reacción del circuit breaker con el corte aplicado. El script ya existe. |
+| **Brecha a cubrir** | No hay alerta específica ni una variante del corte que también tire las conexiones ya abiertas. Ejemplos de alerta: error de conexión upstream o caída brusca del tráfico de red por pod. |
 
 ### 5.6 Desconexión o caída de un componente interno
 
-**Estado:** Probado en parte. Probado: 9/9 recuperaciones de proceso (5,22 a 10,05 s), circuit breaker con Pharmacy a 0 réplicas (502 durante ~10 s y luego 503; recuperación inmediata al volver), y alerta "Servicio caído" en `Firing` (captura "Firing for 40s"). Además, con `disconnect-component.sh` (escala a 0 por 30 s y restaura) el servicio volvió a `READY` **16 s** después de restaurar, 3 de 3 veces, con una réplica y un solo nodo (la primera corrida dio 3 min 32 s por un token vencido de Calico, falla del entorno y no del self healing; se conserva en las notas). ⚠ Circuit breaker y alerta dependen de `feature/rate-limiting`. No probado: caída de SQL Server o de Users.
+**Estado:** Probado en parte. Probado: 9/9 recuperaciones de proceso (5,22 a 10,05 s), circuit breaker con Pharmacy a 0 réplicas (502 durante ~10 s y luego 503; recuperación inmediata al volver), y alerta "Servicio caído" en `Firing` (captura "Firing for 40s"). Además, con `disconnect-component.sh` (escala a 0 por 30 s y restaura) el servicio volvió a `READY` **16 s** después de restaurar, 3 de 3 veces, con una réplica y un solo nodo (la primera corrida dio 3 min 32 s por un token vencido de Calico, falla del entorno y no del self healing; se conserva en las notas). En la corrida completa del 12-11-2026 (escala a 0 por 40 s) la alerta "Servicio caído" llegó a `firing` a los 43 s y un cliente interno vio 40,1 s de fallos, lo que dura la falla con una sola réplica. No probado: caída de SQL Server o de Users.
 
 | Campo | Contenido |
 | --- | --- |
@@ -168,11 +168,11 @@ Cada playbook tiene los mismos campos. Convenciones:
 Antes de ejecutar un caos o de la defensa, el observador confirma cada punto y guarda la salida como evidencia.
 
 - [ ] Clúster arriba y pods `READY`: `kubectl get pods -n pharmago` (backends, UI, base de datos, Prometheus, Grafana, Elasticsearch, Kibana, collector).
-- [ ] Réplicas esperadas: gateway 2/2 ⚠ (depende de `feature/rate-limiting`); users y pharmacy según el perfil desplegado.
+- [ ] Réplicas esperadas: gateway 2/2; users y pharmacy según el perfil desplegado.
 - [ ] Perfil correcto aplicado (`local` o `multinode`) y, en `multinode`, servicios en nodos distintos: `kubectl get pods -n pharmago -o wide`.
 - [ ] Accesos abiertos con `k8s/port-forward.sh`: Grafana (3000), Prometheus (9090), Kibana (5601), gateway (5000).
 - [ ] Targets de Prometheus en `up` (Status → Targets).
-- [ ] Las 7 reglas de Grafana cargadas, en `Normal` y con salud `ok` ⚠.
+- [ ] Las 8 reglas de Grafana cargadas, en `Normal` y con salud `ok`.
 - [ ] Dashboards "PharmaGo - Overview" e "Infra" abiertos y mostrando datos.
 - [ ] Logs visibles en Kibana, con un trace id de prueba que se pueda seguir entre servicios.
 - [ ] Una solicitud normal responde 200 (por ejemplo, `/api/drug` por el gateway).
@@ -228,15 +228,15 @@ Para el informe y la defensa. Este plan y sus mecanismos tienen estos límites; 
 - **Validación incompleta.** De los seis playbooks solo el de caída de componente tiene evidencia sólida. CPU, memoria, storage y corte de red están por validar con los scripts de caos; sus comandos y umbrales son de diseño.
 - **Minikube local ≠ nodos físicos.** Un clúster Minikube multinodo en una sola computadora demuestra separación entre nodos de Kubernetes, no entre máquinas físicas distintas.
 - **`/health` es superficial.** No verifica SQL Server ni dependencias; un 200 no prueba que las operaciones funcionen. La caída de la base no se detecta por probes.
-- **Circuit breaker acotado.** Cubre un servicio caído (falla el sondeo de `/health`), no uno lento o que devuelve 500 con `/health` sano. Detecta en ~10 s con los parámetros actuales ⚠.
-- **Rate limiting aproximado.** Contador en memoria por réplica, con el límite dividido entre réplicas; un reinicio de pod pone los contadores en cero y, si cae una réplica, el cupo efectivo baja a la mitad ⚠.
+- **Circuit breaker acotado.** Cubre un servicio caído (falla el sondeo de `/health`), no uno lento o que devuelve 500 con `/health` sano. Detecta en ~10 s con los parámetros actuales.
+- **Rate limiting aproximado.** Contador en memoria por réplica, con el límite dividido entre réplicas; un reinicio de pod pone los contadores en cero y, si cae una réplica, el cupo efectivo baja a la mitad.
 - **Una sola réplica en users y pharmacy** (según el perfil): hay una ventana de recuperación de unos 5 a 10 s con corte para los clientes.
 - **MTTR medido con `kubectl`.** Los 5,22 a 10,05 s aproximan por arriba el tiempo hasta `READY` y no miden continuidad de tráfico para clientes. Corresponden a fallas aisladas de proceso.
 - **Sin notificaciones.** Las alertas de Grafana no tienen contact point: el plan supone que el observador está mirando el panel.
-- **Brechas de cobertura.** No hay alerta ni script para el corte de red; la alerta de disco mide el nodo y no el pod; no hay límite de `ephemeral-storage`.
+- **Brechas de cobertura.** El corte de red solo bloquea conexiones nuevas y no dispara ninguna alerta; la alerta de disco mide el nodo (la de storage por pod cubre el caos); no hay límite de `ephemeral-storage`; el OOM del servicio no se observó.
 - **Umbrales y severidades** son propuestas del equipo, a ajustar con los resultados del caos para evitar falsos positivos (p. ej. Elasticsearch y SQL Server usan ~63 % de su límite de memoria en reposo).
 - **Alcance excluido:** caída completa de un nodo, pérdida de datos de SQL Server y ataques más allá del volumen de solicitudes.
 
 ## 9. Uso de IA
 
-Borrador redactado con Claude Code a partir de la letra, `docs/objetivo-obligatorio.md`, `docs/contexto-aiops.md`, los manifiestos de `k8s/`, los scripts de `chaos-engineering/` y las reglas de alerta de `feature/rate-limiting`. No se leyó código de negocio. Los umbrales y roles son propuestas a revisar y validar por el equipo con ejecuciones reales.
+Borrador redactado con Claude Code a partir de la letra, `docs/objetivo-obligatorio.md`, `docs/contexto-aiops.md`, los manifiestos de `k8s/`, los scripts de `chaos-engineering/` y las reglas de alerta del repositorio. Actualizado el 15-11-2026 con los resultados de las corridas de caos. No se leyó código de negocio. Los umbrales y roles son propuestas a revisar y validar por el equipo con ejecuciones reales.
